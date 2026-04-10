@@ -223,9 +223,62 @@ body.bright .sw.on{background:#2a6496}
 body.bright .sw-dot{background:#aaa}
 body.bright .sw.on .sw-dot{background:#fff}
 </style>
+<link rel="manifest" id="pwa-manifest">
+<meta name="theme-color" content="#0a0f18">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ops Center">
+<script>
+// ── PWA MANIFEST ──
+const manifestObj={
+  name:"My Operations Center",
+  short_name:"Ops Center",
+  description:"Daily operations planner",
+  start_url:"./",
+  display:"standalone",
+  background_color:"#0a0f18",
+  theme_color:"#0a0f18",
+  orientation:"portrait",
+  icons:[
+    {src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='24' fill='%230a0f18'/%3E%3Ctext x='96' y='130' font-size='110' text-anchor='middle' fill='%234a9fd4'%3E%E2%9A%99%3C/text%3E%3C/svg%3E",sizes:"192x192",type:"image/svg+xml",purpose:"any maskable"},
+    {src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='64' fill='%230a0f18'/%3E%3Ctext x='256' y='360' font-size='300' text-anchor='middle' fill='%234a9fd4'%3E%E2%9A%99%3C/text%3E%3C/svg%3E",sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}
+  ]
+};
+const mBlob=new Blob([JSON.stringify(manifestObj)],{type:'application/json'});
+document.getElementById('pwa-manifest').href=URL.createObjectURL(mBlob);
+
+// ── SERVICE WORKER ──
+if('serviceWorker' in navigator){
+  const swCode=`
+    self.addEventListener('install',e=>{self.skipWaiting();});
+    self.addEventListener('activate',e=>{self.clients.claim();});
+    self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));});
+  `;
+  const swBlob=new Blob([swCode],{type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
+}
+
+// ── INSTALL PROMPT ──
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  const btn=document.getElementById('pwa-install-btn');
+  if(btn)btn.style.display='block';
+});
+window.addEventListener('appinstalled',()=>{
+  const btn=document.getElementById('pwa-install-btn');
+  if(btn)btn.style.display='none';
+});
+function installPWA(){
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(()=>{deferredPrompt=null;});
+}
+</script>
 </head>
 <body>
 <div class="hdr">
+<div id="pwa-install-btn" style="display:none;margin-top:6px"><button onclick="installPWA()" style="background:#2a6496;color:#fff;border:none;border-radius:14px;padding:5px 16px;font-size:11px;cursor:pointer;font-weight:bold">⬇ Install App</button></div>
   <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v2.4.1</span></h1>
   <div class="dt" id="dtLine"></div>
   <div class="theme-toggle">
@@ -1206,7 +1259,7 @@ function updateTodayBlockHeaders(){
   // Update section headers in Today tab
   var sts=document.querySelectorAll('#panel-today .st');
   if(sts[0]&&rw)sts[0].textContent=(rw.timeFrom||'9:30')+'–'+(rw.timeTo||'17:00')+' '+(rw.label||'Regular Work');
-  if(sts[1]&&pw)sts[1].textContent=(pw.timeFrom||'17:00')+'-'+(pw.timeTo||'19:00')+' '+(pw.label||'Project Work');
+  if(sts[1]&&pw)sts[1].textContent=(pw.timeFrom||'17:00')+'–'+(pw.timeTo||'19:00')+' '+(pw.label||'Project Work');
   // Show/hide sections
   var rwSec=document.querySelector('#panel-today .sec:nth-child(3)');
   var pwSec=document.querySelector('#panel-today .sec:nth-child(4)');
