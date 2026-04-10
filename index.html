@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Operations Center v8</title>
+<title>My Operations Center v9</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0f18;font-family:Arial,sans-serif;color:#fff;padding:12px;max-width:640px;margin:0 auto;min-height:100vh;transition:background .3s,color .3s}
@@ -258,7 +258,7 @@ if('serviceWorker' in navigator){
 </head>
 <body>
 <div class="hdr">
-  <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v8</span></h1>
+  <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v9</span></h1>
   <div class="dt" id="dtLine"></div>
   
   <div id="pwa-install" style="display:none;margin-top:6px">
@@ -322,8 +322,8 @@ if('serviceWorker' in navigator){
 
   <div class="sec">
     <div class="st">5:00–7:00 Project Work</div>
-    <div class="sec-hint" style="font-size:10px;color:#333;margin-bottom:6px;line-height:1.6">Type project tasks. Use [tag] for project: [ev] [cstand] [roboU] [plant]<br><span style="color:#4a9fd4">e.g.</span> Design pelvis joint [ev] &nbsp;·&nbsp; Call C Stand vendor @6pm [cstand]</div>
-    <textarea class="sec-input" id="pw-input" placeholder="Design pelvis joint [ev]&#10;Call C Stand vendor @6pm [cstand]&#10;Research Neem compounds [plant]&#10;Robotic arm specs [roboU]"></textarea>
+    <div class="sec-hint" style="font-size:10px;color:#333;margin-bottom:6px;line-height:1.6">Type project tasks. Use [tag] for project: [p1] [p2] [p3]<br><span style="color:#4a9fd4">e.g.</span> Design new product [p1] &nbsp;·&nbsp; Call vendor @6pm [p2]</div>
+    <textarea class="sec-input" id="pw-input" placeholder="Design new product [p1]&#10;Call vendor @6pm [p2]&#10;Review specs [p3]"></textarea>
     <button class="parse-btn" onclick="parseInput('project')">📋 Create Pipeline →</button>
     <div id="pw-preview" style="display:none">
       <div style="font-size:10px;color:#4caf50;margin-bottom:6px;font-weight:bold">Review:</div>
@@ -335,8 +335,8 @@ if('serviceWorker' in navigator){
       <div class="add-row">
         <input type="text" id="pw-add" placeholder="New task..." />
         <select id="pw-proj" style="width:90px">
-          <option value="cstand">C Stand</option><option value="ev">EV Scooter</option>
-          <option value="roboU">Robo Use</option><option value="roboM">Robo Mfg</option><option value="plant">Plant</option>
+          <option value="proj1">Project 1</option><option value="proj2">Project 2</option>
+          <option value="proj3">Project 3</option>
         </select>
         <input type="time" id="pw-time" style="width:75px" />
         <button class="btn btn-bl btn-sm" onclick="addSingle('project')">+ Add</button>
@@ -495,22 +495,17 @@ document.getElementById('dtLine').textContent=DAYS[now.getDay()]+' · '+now.getD
 const nowTime=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
 
 // ── CONFIG ──
-const PN={cstand:'C Stand',roboU:'Robo (Procurement)',ev:'EV Scooter',roboM:'Robo (Mfg)',plant:'Plant Research',biz:'Business',reg:'Regular Work'};
-const PC={cstand:'#2a6496',roboU:'#f0a500',ev:'#27ae60',roboM:'#d44ad4',plant:'#27ae60',biz:'#555',reg:'#4a9fd4'};
-const PT={cstand:'tag-cstand',roboU:'tag-roboU',ev:'tag-ev',roboM:'tag-roboM',plant:'tag-plant',biz:'tag-biz',reg:'tag-reg'};
+const PN={proj1:'Project 1',proj2:'Project 2',proj3:'Project 3',biz:'Business',reg:'Regular Work'};
+const PC={proj1:'#2a6496',proj2:'#f0a500',proj3:'#27ae60',biz:'#555',reg:'#4a9fd4'};
+const PT={proj1:'tag-cstand',proj2:'tag-roboU',proj3:'tag-ev',biz:'tag-biz',reg:'tag-reg'};
 const SC=['#2a6496','#f0a500','#d44ad4','#27ae60'];
 const STAGES=['📋 Registered','📞 Follow Up','⚙ Executing','✓ Done'];
-const PROJ_ALIASES={ev:['ev','evscooter','scooter','electric'],cstand:['cstand','c stand','stand','studio'],roboU:['robou','robo use','robotic use','procurement'],roboM:['robom','robo mfg','robo manufacturing'],plant:['plant','neem','tulsi','herb','ayur'],biz:['biz','business','office','fittings']};
+const PROJ_ALIASES={proj1:['proj1','project1','p1'],proj2:['proj2','project2','p2'],proj3:['proj3','project3','p3'],biz:['biz','business']};
 
 // ── STATE ──
 let state={
   energy:3,items:[],captures:[],
-  projects:[
-    {id:'p_cstand',name:'C Stand Revival',type:'project',color:'#4a9fd4',desc:'Re-entering C stand manufacturing. Engineering-driven product at mid-market price. Direct to customer — no middlemen.',dest:'First C Stand unit sold to a Mumbai Bollywood production house or content creator studio.',start:'2026-04-07',target:'2026-10-01',momentum:0,milestones:[{id:'ms1',title:'Product spec complete',date:'2026-04-30',done:false,note:'Engineering the C stand from scratch — load calculations, materials, section profiles'},{id:'ms2',title:'First unit manufactured',date:'2026-06-15',done:false,note:'Proto unit from existing facility'},{id:'ms3',title:'GeM listing live',date:'2026-05-15',done:false,note:'Government buyers channel open'}],hurdles:[{id:'h1',title:'Middlemen previously diverted clients',note:'Now selling direct — website, IndiaMart, GeM, Instagram',resolved:false}]},
-    {id:'p_ev',name:'EV Kick Scooter',type:'project',color:'#27ae60',desc:'Modular swappable platform. 25kmph, 250W BLDC, 48V swappable battery. Three configs — Commuter, Delivery, Teen. India market.',dest:'Working Proto 2 demonstrated to first investor or incubator by October 2026.',start:'2026-04-07',target:'2026-10-15',momentum:0,milestones:[{id:'ms4',title:'SolidWorks master skeleton',date:'2026-04-12',done:false,note:'First design session — all critical dimensions locked'},{id:'ms5',title:'Base frame fabrication',date:'2026-06-01',done:false,note:'Aluminium extrusion rails + pelvis joint casting'},{id:'ms6',title:'Proto 1 assembled',date:'2026-07-15',done:false,note:'Basic functional test — swap mechanism validation'},{id:'ms7',title:'Proto 2 road tested',date:'2026-08-31',done:false,note:'Indian road conditions — potholes, rain, load'}],hurdles:[{id:'h2',title:'No CAD time during work hours',note:'Using AI-assisted design on Sunday sessions only',resolved:false},{id:'h3',title:'IP protection before showing anyone',note:'Provisional patent filed before any external presentation',resolved:false}]},
-    {id:'p_roboU',name:'Robotic Arm (Procurement)',type:'project',color:'#f0a500',desc:'4-5 DOF hybrid actuation arm. Servo motors for joints, pneumatic gripper end effector. For own EV manufacturing line.',dest:'First robotic arm performing one specific assembly task on the scooter production line.',start:'2026-05-01',target:'2026-12-01',momentum:0,milestones:[{id:'ms8',title:'First use case defined',date:'2026-05-15',done:false,note:'Which specific task on the scooter line'},{id:'ms9',title:'Components sourced',date:'2026-07-01',done:false,note:'Servo motors, controller, pneumatic components'}],hurdles:[]},
-    {id:'p_plant',name:'Plant Research',type:'idea',color:'#27ae60',desc:'Ancient Indian medicinal plant knowledge. Nava Visha principle. East vs West pharmacology gap. Rigveda plant references.',dest:'Direction unclear — follow the curiosity. A product or application will emerge from the knowledge.',start:'2026-04-07',target:'2026-12-31',momentum:0,milestones:[{id:'ms10',title:'Read Charaka Samhita Dravyaguna section',date:'2026-04-30',done:false,note:'Plant properties systematically documented'},{id:'ms11',title:'Identify one practical application',date:'2026-06-30',done:false,note:'Could be product, could be personal use, could be manufacturing'}],hurdles:[]}
-  ],
+  projects:[],
   history:[],
   workBlock:'',projBlock:''
 };
@@ -592,7 +587,7 @@ function parseInput(type){
   const raw=document.getElementById(type==='regular'?'rw-input':'pw-input').value;
   const lines=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
   if(!lines.length)return;
-  parsed[type]=lines.map((line,i)=>({id:'pi_'+Date.now()+'_'+i,rawText:line,title:cleanT(line),time:detectTime(line),proj:type==='project'?(detectProj(line)||'cstand'):'reg',stage:0,include:true}));
+  parsed[type]=lines.map((line,i)=>({id:'pi_'+Date.now()+'_'+i,rawText:line,title:cleanT(line),time:detectTime(line),proj:type==='project'?(detectProj(line)||'proj1'):'reg',stage:0,include:true}));
   const prevId=type==='regular'?'rw-preview':'pw-preview';
   const itemsId=type==='regular'?'rw-prev-items':'pw-prev-items';
   document.getElementById(itemsId).innerHTML=parsed[type].map((item,i)=>`
@@ -603,7 +598,7 @@ function parseInput(type){
         ${item.time?`<span style="font-size:10px;color:#f0a500;font-weight:bold">⏰ ${item.time}</span>`:''}
       </div>
       ${type==='project'?`<select class="pi-sel" onchange="parsed['project'][${i}].proj=this.value">
-        <option value="cstand" ${item.proj==='cstand'?'selected':''}>C Stand</option>
+        <option value="proj1" ${item.proj==='proj1'?'selected':''}>Project 1</option>
         <option value="ev" ${item.proj==='ev'?'selected':''}>EV</option>
         <option value="roboU" ${item.proj==='roboU'?'selected':''}>Robo U</option>
         <option value="roboM" ${item.proj==='roboM'?'selected':''}>Robo M</option>
