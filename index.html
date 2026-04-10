@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Operations Center v16</title>
+<title>My Operations Center v17</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0f18;font-family:Arial,sans-serif;color:#fff;padding:12px;max-width:640px;margin:0 auto;min-height:100vh;transition:background .3s,color .3s}
@@ -277,7 +277,7 @@ body.bright .fbox.factive{border-color:#2a6496}
   <div class="sec">
     <div class="st">About</div>
     <div style="font-size:12px;color:#555;line-height:1.8">
-      <div>My Operations Center <span style="color:#4a9fd4">v16</span></div>
+      <div>My Operations Center <span style="color:#4a9fd4">v17</span></div>
       <div style="font-size:10px;margin-top:4px">Built for makers, manufacturers & doers.<br>Your data never leaves your device.</div>
     </div>
   </div>
@@ -304,32 +304,18 @@ const manifestData = {
 const blob = new Blob([JSON.stringify(manifestData)], {type:'application/json'});
 document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
 
-// ── SERVICE WORKER ──
+// ── SERVICE WORKER — unregister old, register fresh ──
 if('serviceWorker' in navigator){
-  const swCode = `
-    const CACHE = 'ops-planner-v7';
-    const ASSETS = [self.location.href];
-    self.addEventListener('install', e => {
-      e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
-      self.skipWaiting();
-    });
-    self.addEventListener('activate', e => {
-      e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
-      self.clients.claim();
-    });
-    self.addEventListener('fetch', e => {
-      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match(e.request))));
-    });
-  `;
-  const swBlob = new Blob([swCode], {type:'application/javascript'});
-  const swUrl = URL.createObjectURL(swBlob);
-  navigator.serviceWorker.register(swUrl).then(() => console.log('SW registered')).catch(e => console.log('SW error', e));
+  // Unregister all old service workers first
+  navigator.serviceWorker.getRegistrations().then(regs=>{
+    regs.forEach(r=>r.unregister());
+  });
 }
 </script>
 </head>
 <body>
 <div class="hdr">
-  <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v16</span></h1>
+  <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v17</span></h1>
   <div class="dt" id="dtLine"></div>
   
   <div id="pwa-install" style="display:none;margin-top:6px">
@@ -1404,7 +1390,7 @@ function saveUsername(){
 function updateHeaderName(){
   const h=document.querySelector('.hdr h1');
   if(h&&state.username){
-    h.innerHTML=`⚙ ${state.username}'s Ops Center <span style="font-size:10px;color:#444;font-weight:normal">v16</span>`;
+    h.innerHTML=`⚙ ${state.username}'s Ops Center <span style="font-size:10px;color:#444;font-weight:normal">v17</span>`;
   }
 }
 
