@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Operations Center v11</title>
+<title>My Operations Center v12</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0f18;font-family:Arial,sans-serif;color:#fff;padding:12px;max-width:640px;margin:0 auto;min-height:100vh;transition:background .3s,color .3s}
@@ -294,6 +294,14 @@ body.bright .fbox.factive{border-color:#2a6496}
     <div id="notif-status" style="font-size:10px;margin-top:6px;text-align:center"></div>
   </div>
 
+
+  <!-- TAB VISIBILITY -->
+  <div class="sec">
+    <div class="st">Tab Visibility</div>
+    <div style="font-size:11px;color:#555;margin-bottom:10px">Choose which optional tabs appear in your app. Core tabs are always visible.</div>
+    <div id="tab-visibility-settings"></div>
+  </div>
+
   <!-- RESET -->
   <div class="sec">
     <div class="st">Data</div>
@@ -306,7 +314,7 @@ body.bright .fbox.factive{border-color:#2a6496}
   <div class="sec">
     <div class="st">About</div>
     <div style="font-size:12px;color:#555;line-height:1.8">
-      <div>My Operations Center <span style="color:#4a9fd4">v11</span></div>
+      <div>My Operations Center <span style="color:#4a9fd4">v12</span></div>
       <div style="font-size:10px;margin-top:4px">Built for makers, manufacturers & doers.<br>Your data never leaves your device.</div>
     </div>
   </div>
@@ -358,26 +366,14 @@ if('serviceWorker' in navigator){
 </head>
 <body>
 <div class="hdr">
-  <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v11</span></h1>
+  <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v12</span></h1>
   <div class="dt" id="dtLine"></div>
   
   <div id="pwa-install" style="display:none;margin-top:6px">
     <button onclick="installPWA()" style="background:#2a6496;color:#fff;border:none;border-radius:14px;padding:5px 14px;font-size:10px;cursor:pointer;font-weight:bold">⬇ Install App</button>
   </div>
 </div>
-<div class="tabs">
-  <div class="tab active" onclick="showTab('today',this)">Today</div>
-  <div class="tab" onclick="showTab('regwork',this)">Regular <span class="bx" id="b-rw">0</span></div>
-  <div class="tab" onclick="showTab('projwork',this)">Pipeline <span class="bx" id="b-pw">0</span></div>
-  <div class="tab" onclick="showTab('projects',this)">Projects & Ideas</div>
-  <div class="tab" onclick="showTab('schedule',this)">Schedule</div>
-  <div class="tab" onclick="showTab('overdue',this)">Overdue <span class="bx" id="b-ov">0</span></div>
-  <div class="tab" onclick="showTab('progress',this)">Progress</div>
-  <div class="tab" onclick="showTab('history',this)">History</div>
-  <div class="tab" onclick="showTab('tomorrow',this)">Tomorrow</div>
-  <div class="tab" onclick="showTab('capture',this)">Capture</div>
-  <div class="tab" onclick="showTab('settings',this)">⚙ Settings</div>
-</div>
+<div class="tabs" id="main-tabs"></div>
 
 <!-- ═══ TODAY ═══ -->
 <div class="panel active" id="panel-today">
@@ -611,7 +607,8 @@ let state={
     {id:'regular',label:'Regular Work',enabled:true,timeFrom:'09:30',timeTo:'17:00'},
     {id:'project',label:'Project Work',enabled:true,timeFrom:'17:00',timeTo:'19:00'}
   ],
-  notifSettings:{task:true,meeting_early:true,meeting_now:true,morning:false}
+  notifSettings:{task:true,meeting_early:true,meeting_now:true,morning:false},
+  tabVisibility:{schedule:false,overdue:false,history:false,capture:false}
 };
 
 // ── STORAGE ──
@@ -630,6 +627,7 @@ function load(){
   checkCF();renderAll();renderCaptures();updateBadges();
   renderProjectsList();renderSchedule();renderHistory();
   updateHeaderName();updateTodayBlocks();
+  renderTabs('today');
   if(Notification.permission==='granted')scheduleAllNotifications();
 }
 
@@ -642,9 +640,9 @@ function logHistory(text,tag,tagClass){
 // ── TABS ──
 function showTab(id,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('panel-'+id).classList.add('active');
-  if(el)el.classList.add('active');
+  const panel=document.getElementById('panel-'+id);
+  if(panel)panel.classList.add('active');
+  renderTabs(id);
   renderAll();
   if(id==='projects')renderProjectsList();
   if(id==='schedule'){renderSchedule();populateProjSel();}
@@ -1327,6 +1325,35 @@ window.addEventListener('appinstalled', () => {
 });
 
 
+
+// ── TAB DEFINITIONS ──
+const ALL_TABS=[
+  {id:'today',label:'Today',badge:null,core:true},
+  {id:'regwork',label:'Regular',badge:'b-rw',core:true},
+  {id:'projwork',label:'Pipeline',badge:'b-pw',core:true},
+  {id:'projects',label:'Projects & Ideas',badge:null,core:true},
+  {id:'progress',label:'Progress',badge:null,core:true},
+  {id:'tomorrow',label:'Tomorrow',badge:null,core:true},
+  {id:'schedule',label:'Schedule',badge:null,core:false},
+  {id:'overdue',label:'Overdue',badge:'b-ov',core:false},
+  {id:'history',label:'History',badge:null,core:false},
+  {id:'capture',label:'Capture',badge:null,core:false},
+];
+
+function renderTabs(activeId){
+  const tv=state.tabVisibility||{};
+  const container=document.getElementById('main-tabs');
+  if(!container)return;
+  const visibleTabs=ALL_TABS.filter(t=>t.core||tv[t.id]);
+  // Always add Settings last
+  const allVisible=[...visibleTabs,{id:'settings',label:'⚙ Settings',badge:null,core:true}];
+  container.innerHTML=allVisible.map(t=>`
+    <div class="tab ${(activeId||'today')===t.id?'active':''}" onclick="showTab('${t.id}',this)">
+      ${t.label}${t.badge?`<span class="bx" id="${t.badge}">0</span>`:''}
+    </div>`).join('');
+  updateBadges();
+}
+
 // ── SETTINGS ──
 function renderSettings(){
   // Username
@@ -1359,6 +1386,20 @@ function renderSettings(){
     if(tw)tw.parentElement.classList.toggle('on',!!ns[k]);
   });
 
+  // Tab visibility toggles
+  const tvEl=document.getElementById('tab-visibility-settings');
+  if(tvEl){
+    const tv=state.tabVisibility||{};
+    const optionalTabs=ALL_TABS.filter(t=>!t.core);
+    tvEl.innerHTML=optionalTabs.map(t=>`
+      <div class="wb-row">
+        <div class="toggle-wrap ${tv[t.id]?'on':''}" onclick="toggleTabVis('${t.id}')"><div class="tog"></div></div>
+        <div style="flex:1;padding-left:8px">
+          <div style="font-size:12px;color:#fff">${t.label}</div>
+        </div>
+      </div>`).join('');
+  }
+
   // Notification permission status
   const statusEl=document.getElementById('notif-status');
   const permBtn=document.getElementById('notif-perm-btn');
@@ -1386,7 +1427,7 @@ function saveUsername(){
 function updateHeaderName(){
   const h=document.querySelector('.hdr h1');
   if(h&&state.username){
-    h.innerHTML=`⚙ ${state.username}'s Ops Center <span style="font-size:10px;color:#444;font-weight:normal">v11</span>`;
+    h.innerHTML=`⚙ ${state.username}'s Ops Center <span style="font-size:10px;color:#444;font-weight:normal">v12</span>`;
   }
 }
 
@@ -1422,6 +1463,13 @@ function updateTodayBlocks(){
     if(rwSts[0])rwSts[0].textContent=`${rw.timeFrom}–${rw.timeTo} ${rw.label}`;
     if(rwSts[1])rwSts[1].textContent=`${pw?pw.timeFrom+'-'+pw.timeTo+' '+pw.label:'Project Work'}`;
   }
+}
+
+
+function toggleTabVis(id){
+  if(!state.tabVisibility)state.tabVisibility={};
+  state.tabVisibility[id]=!state.tabVisibility[id];
+  save();renderSettings();renderTabs('settings');
 }
 
 function toggleNotifSetting(key){
