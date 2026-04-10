@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Operations Center v14</title>
+<title>My Operations Center v15</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0f18;font-family:Arial,sans-serif;color:#fff;padding:12px;max-width:640px;margin:0 auto;min-height:100vh;transition:background .3s,color .3s}
@@ -277,7 +277,7 @@ body.bright .fbox.factive{border-color:#2a6496}
   <div class="sec">
     <div class="st">About</div>
     <div style="font-size:12px;color:#555;line-height:1.8">
-      <div>My Operations Center <span style="color:#4a9fd4">v14</span></div>
+      <div>My Operations Center <span style="color:#4a9fd4">v15</span></div>
       <div style="font-size:10px;margin-top:4px">Built for makers, manufacturers & doers.<br>Your data never leaves your device.</div>
     </div>
   </div>
@@ -329,7 +329,7 @@ if('serviceWorker' in navigator){
 </head>
 <body>
 <div class="hdr">
-  <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v14</span></h1>
+  <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v15</span></h1>
   <div class="dt" id="dtLine"></div>
   
   <div id="pwa-install" style="display:none;margin-top:6px">
@@ -1332,14 +1332,15 @@ function renderSettings(){
   // Work blocks
   const wbEl=document.getElementById('workblock-settings');
   if(wbEl){
-    wbEl.innerHTML=(state.workBlocks||[]).map((wb,i)=>`
-      <div class="wb-row">
-        <div class="toggle-wrap ${wb.enabled?'on':''}" onclick="toggleWB(${i})"><div class="tog"></div></div>
-        <input class="wb-name-input" id="wb-name-${i}" value="${wb.label}" placeholder="Block name..." />
-        <input type="time" class="fi" id="wb-from-${i}" value="${wb.timeFrom||''}" style="width:70px" />
-        <span style="font-size:10px;color:#444">to</span>
-        <input type="time" class="fi" id="wb-to-${i}" value="${wb.timeTo||''}" style="width:70px" />
-      </div>`).join('');
+    wbEl.innerHTML=(state.workBlocks||[]).map(function(wb,i){
+      return '<div class="wb-row">'
+        +'<div class="toggle-wrap '+(wb.enabled?'on':'')+'" onclick="toggleWB('+i+')"><div class="tog"></div></div>'
+        +'<input class="wb-name-input" id="wb-name-'+i+'" value="'+wb.label+'" placeholder="Block name..." />'
+        +'<input type="time" class="fi" id="wb-from-'+i+'" value="'+(wb.timeFrom||'')+'" style="width:70px" />'
+        +'<span style="font-size:10px;color:#444">to</span>'
+        +'<input type="time" class="fi" id="wb-to-'+i+'" value="'+(wb.timeTo||'')+'" style="width:70px" />'
+        +'</div>';
+    }).join('');
   }
 
   // Notification toggles — rendered dynamically
@@ -1352,14 +1353,12 @@ function renderSettings(){
   ];
   const ntEl=document.getElementById('notif-toggles');
   if(ntEl){
-    ntEl.innerHTML=notifDefs.map(d=>`
-      <div class="wb-row">
-        <div style="flex:1">
-          <div class="set-label">${d.label}</div>
-          <div class="set-sublabel">${d.sub}</div>
-        </div>
-        <div class="toggle-wrap ${ns[d.key]?'on':''}" onclick="toggleNotifSetting('${d.key}')"><div class="tog"></div></div>
-      </div>`).join('');
+    ntEl.innerHTML=notifDefs.map(function(d){
+      return '<div class="wb-row">'
+        +'<div style="flex:1"><div class="set-label">'+d.label+'</div><div class="set-sublabel">'+d.sub+'</div></div>'
+        +'<div class="toggle-wrap '+(ns[d.key]?'on':'')+'" onclick="toggleNotifSetting(''+d.key+'')"><div class="tog"></div></div>'
+        +'</div>';
+    }).join('');
   }
 
   // Tab visibility toggles
@@ -1367,13 +1366,12 @@ function renderSettings(){
   if(tvEl){
     const tv=state.tabVisibility||{};
     const optionalTabs=ALL_TABS.filter(t=>!t.core);
-    tvEl.innerHTML=optionalTabs.map(t=>`
-      <div class="wb-row">
-        <div style="flex:1">
-          <div class="set-label">${t.label}</div>
-        </div>
-        <div class="toggle-wrap ${tv[t.id]?'on':''}" onclick="toggleTabVis('${t.id}')"><div class="tog"></div></div>
-      </div>`).join('');
+    tvEl.innerHTML=optionalTabs.map(function(t){
+      return '<div class="wb-row">'
+        +'<div style="flex:1"><div class="set-label">'+t.label+'</div></div>'
+        +'<div class="toggle-wrap '+(tv[t.id]?'on':'')+'" onclick="toggleTabVis(''+t.id+'')"><div class="tog"></div></div>'
+        +'</div>';
+    }).join('');
   }
 
   // Notification permission status
@@ -1403,7 +1401,7 @@ function saveUsername(){
 function updateHeaderName(){
   const h=document.querySelector('.hdr h1');
   if(h&&state.username){
-    h.innerHTML=`⚙ ${state.username}'s Ops Center <span style="font-size:10px;color:#444;font-weight:normal">v14</span>`;
+    h.innerHTML=`⚙ ${state.username}'s Ops Center <span style="font-size:10px;color:#444;font-weight:normal">v15</span>`;
   }
 }
 
