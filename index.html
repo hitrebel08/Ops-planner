@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Operations Center v10</title>
+<title>My Operations Center v11</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0f18;font-family:Arial,sans-serif;color:#fff;padding:12px;max-width:640px;margin:0 auto;min-height:100vh;transition:background .3s,color .3s}
@@ -306,7 +306,7 @@ body.bright .fbox.factive{border-color:#2a6496}
   <div class="sec">
     <div class="st">About</div>
     <div style="font-size:12px;color:#555;line-height:1.8">
-      <div>My Operations Center <span style="color:#4a9fd4">v10</span></div>
+      <div>My Operations Center <span style="color:#4a9fd4">v11</span></div>
       <div style="font-size:10px;margin-top:4px">Built for makers, manufacturers & doers.<br>Your data never leaves your device.</div>
     </div>
   </div>
@@ -358,15 +358,11 @@ if('serviceWorker' in navigator){
 </head>
 <body>
 <div class="hdr">
-  <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v10</span></h1>
+  <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v11</span></h1>
   <div class="dt" id="dtLine"></div>
   
   <div id="pwa-install" style="display:none;margin-top:6px">
     <button onclick="installPWA()" style="background:#2a6496;color:#fff;border:none;border-radius:14px;padding:5px 14px;font-size:10px;cursor:pointer;font-weight:bold">⬇ Install App</button>
-  </div>
-<div class="theme-toggle">
-    <div class="theme-btn active" id="theme-dark" onclick="setTheme('dark')">🌙 Dark</div>
-    <div class="theme-btn" id="theme-bright" onclick="setTheme('bright')">☀ Bright</div>
   </div>
 </div>
 <div class="tabs">
@@ -584,105 +580,6 @@ if('serviceWorker' in navigator){
   </div>
 </div>
 
-<!-- ═══ SETTINGS ═══ -->
-<div class="panel" id="panel-settings">
-
-  <!-- USERNAME -->
-  <div class="sec">
-    <div class="st">Your Profile</div>
-    <div style="margin-bottom:10px">
-      <div style="font-size:11px;color:#666;margin-bottom:6px">Your name (shown in app)</div>
-      <div style="display:flex;gap:6px">
-        <input class="fi fw" type="text" id="set-username" placeholder="Enter your name..." />
-        <button class="btn btn-bl btn-sm" onclick="saveUsername()">Save</button>
-      </div>
-      <div id="username-saved" style="font-size:10px;color:#4caf50;margin-top:4px;display:none">✓ Saved</div>
-    </div>
-  </div>
-
-  <!-- THEME -->
-  <div class="sec">
-    <div class="st">Appearance</div>
-    <div style="display:flex;gap:8px">
-      <div class="theme-btn active" id="set-theme-dark" onclick="setTheme('dark')" style="flex:1;text-align:center;padding:10px">🌙 Dark</div>
-      <div class="theme-btn" id="set-theme-bright" onclick="setTheme('bright')" style="flex:1;text-align:center;padding:10px">☀ Bright</div>
-    </div>
-  </div>
-
-  <!-- WORK BLOCKS -->
-  <div class="sec">
-    <div class="st">Work Blocks</div>
-    <div style="font-size:11px;color:#555;margin-bottom:10px">Choose which sections appear in your app. Rename them to match your workflow.</div>
-    <div id="workblock-settings"></div>
-    <button class="btn btn-gr btn-full" onclick="saveWorkBlocks()" style="margin-top:8px">✓ Save Work Blocks</button>
-    <div id="wb-saved" style="font-size:10px;color:#4caf50;margin-top:4px;display:none">✓ Saved — restart app to see changes</div>
-  </div>
-
-  <!-- NOTIFICATIONS -->
-  <div class="sec">
-    <div class="st">Notifications</div>
-    <div style="font-size:11px;color:#555;margin-bottom:10px">Get reminded about your tasks and meetings.</div>
-    <div class="row-set">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <div>
-          <div style="font-size:12px;color:#fff">Task reminders</div>
-          <div style="font-size:10px;color:#555">Notify at task time</div>
-        </div>
-        <div class="toggle-wrap" onclick="toggleNotifSetting('task')">
-          <div class="tog" id="tog-task"></div>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <div>
-          <div style="font-size:12px;color:#fff">Meeting — 1 hour before</div>
-          <div style="font-size:10px;color:#555">Early warning for meetings</div>
-        </div>
-        <div class="toggle-wrap" onclick="toggleNotifSetting('meeting_early')">
-          <div class="tog" id="tog-meeting_early"></div>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <div>
-          <div style="font-size:12px;color:#fff">Meeting — at time</div>
-          <div style="font-size:10px;color:#555">Notify when meeting starts</div>
-        </div>
-        <div class="toggle-wrap" onclick="toggleNotifSetting('meeting_now')">
-          <div class="tog" id="tog-meeting_now"></div>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <div style="font-size:12px;color:#fff">Morning briefing</div>
-          <div style="font-size:10px;color:#555">Daily summary at 9:00 AM</div>
-        </div>
-        <div class="toggle-wrap" onclick="toggleNotifSetting('morning')">
-          <div class="tog" id="tog-morning"></div>
-        </div>
-      </div>
-    </div>
-    <button class="btn btn-bl btn-full" onclick="requestNotifPermission()" style="margin-top:10px" id="notif-perm-btn">🔔 Enable Notifications</button>
-    <div id="notif-status" style="font-size:10px;margin-top:6px;text-align:center"></div>
-  </div>
-
-  <!-- RESET -->
-  <div class="sec">
-    <div class="st">Data</div>
-    <div style="font-size:11px;color:#555;margin-bottom:10px">All your data is stored only on this device. Nothing is sent to any server.</div>
-    <button class="btn btn-full" onclick="resetApp()" style="background:#1a0a0a;border:1px solid #5a2e2e;color:#c97b6a;padding:10px">⚠ Reset All Data</button>
-    <div style="font-size:10px;color:#333;margin-top:5px;text-align:center">This will clear all tasks, projects and history.</div>
-  </div>
-
-  <!-- ABOUT -->
-  <div class="sec">
-    <div class="st">About</div>
-    <div style="font-size:12px;color:#555;line-height:1.8">
-      <div>My Operations Center <span style="color:#4a9fd4">v10</span></div>
-      <div style="font-size:10px;margin-top:4px">Built for makers, manufacturers & doers.<br>Your data never leaves your device.</div>
-    </div>
-  </div>
-
-</div>
-
 
 <script>
 // ── INIT ──
@@ -711,7 +608,7 @@ let state={
   workBlock:'',projBlock:'',
   username:'',
   workBlocks:[
-    {id:'regular',label:'Regular Work',enabled:true,timeFrom:'9:30',timeTo:'17:00'},
+    {id:'regular',label:'Regular Work',enabled:true,timeFrom:'09:30',timeTo:'17:00'},
     {id:'project',label:'Project Work',enabled:true,timeFrom:'17:00',timeTo:'19:00'}
   ],
   notifSettings:{task:true,meeting_early:true,meeting_now:true,morning:false}
@@ -1203,8 +1100,8 @@ function deleteHurdle(projId,hId,e){
 function setTheme(theme){
   document.body.classList.remove('bright');
   if(theme==='bright')document.body.classList.add('bright');
-  document.getElementById('theme-dark').classList.toggle('active',theme==='dark');
-  document.getElementById('theme-bright').classList.toggle('active',theme==='bright');
+  const td=document.getElementById('set-theme-dark');if(td)td.classList.toggle('active',theme==='dark');
+  const tb=document.getElementById('set-theme-bright');if(tb)tb.classList.toggle('active',theme==='bright');
   state.theme=theme;save();
 }
 
@@ -1489,7 +1386,7 @@ function saveUsername(){
 function updateHeaderName(){
   const h=document.querySelector('.hdr h1');
   if(h&&state.username){
-    h.innerHTML=`⚙ ${state.username}'s Ops Center <span style="font-size:10px;color:#444;font-weight:normal">v10</span>`;
+    h.innerHTML=`⚙ ${state.username}'s Ops Center <span style="font-size:10px;color:#444;font-weight:normal">v11</span>`;
   }
 }
 
