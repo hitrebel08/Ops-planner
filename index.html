@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Operations Center v2.5.2</title>
+<title>My Operations Center v3.0</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0f18;font-family:Arial,sans-serif;color:#fff;padding:12px;max-width:640px;margin:0 auto;min-height:100vh;transition:background .3s,color .3s}
@@ -223,20 +223,55 @@ body.bright .sw.on{background:#2a6496}
 body.bright .sw-dot{background:#aaa}
 body.bright .sw.on .sw-dot{background:#fff}
 
-/* ── FOCUS MODE ── */
+/* WORK BLOCK SETTINGS */
+.wb-block{background:#0a0f18;border-radius:8px;padding:10px;margin-bottom:10px;border:1px solid #1e2a3a}
+.wb-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.wb-name{background:#111827;border:1px solid #1e2a3a;border-radius:5px;color:#ccc;font-size:11px;padding:5px 8px;flex:1}
+.wb-name:focus{outline:none;border-color:#2a6496}
+.wb-times{display:flex;gap:6px;align-items:center}
+body.bright .wb-block{background:#f8fafc;border-color:#dde3ed}
+body.bright .wb-name{background:#fff;border-color:#dde3ed;color:#333}
+
+/* MODE SWITCHER */
+.mode-card{border-radius:12px;padding:14px;margin-bottom:10px;border:2px solid transparent;cursor:pointer;transition:all .2s;background:#111827}
+.mode-card.selected{border-color:#4a9fd4}
+.mode-card.selected-simple{border-color:#4caf50}
+.mode-badge{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:bold;display:inline-block;margin-bottom:6px}
+.mode-card-title{font-size:14px;font-weight:bold;color:#fff;margin-bottom:4px}
+.mode-card-desc{font-size:11px;color:#555;line-height:1.6}
+body.bright .mode-card{background:#f8fafc}
+body.bright .mode-card-title{color:#1a1a2e}
+
+/* FIRST LAUNCH */
+#launch-screen{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f18;z-index:99999;overflow-y:auto;padding:30px 20px 40px;box-sizing:border-box}
+#launch-screen.active{display:block}
+.launch-logo{text-align:center;font-size:48px;margin-bottom:8px}
+.launch-title{text-align:center;font-size:22px;font-weight:bold;color:#fff;margin-bottom:4px}
+.launch-sub{text-align:center;font-size:12px;color:#555;margin-bottom:28px}
+.launch-section{font-size:10px;color:#4a9fd4;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
+.launch-name-input{width:100%;background:#111827;border:1px solid #2a6496;border-radius:10px;color:#fff;font-size:16px;padding:14px;font-family:Arial;box-sizing:border-box;margin-bottom:24px}
+.launch-name-input::placeholder{color:#333}
+.launch-mode-card{border-radius:14px;padding:16px;margin-bottom:12px;border:2px solid #1e2a3a;cursor:pointer;background:#111827}
+.launch-mode-card.selected{border-color:#4a9fd4;background:#0a1a2a}
+.launch-mode-card.selected-simple{border-color:#4caf50;background:#0a1a0a}
+.launch-mode-badge{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:bold;display:inline-block;margin-bottom:8px}
+.launch-mode-title{font-size:15px;font-weight:bold;color:#fff;margin-bottom:5px}
+.launch-mode-desc{font-size:11px;color:#555;line-height:1.6}
+.launch-mode-features{margin-top:8px;font-size:10px;color:#444;line-height:1.8}
+.launch-start-btn{width:100%;padding:16px;background:#2a6496;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;margin-top:8px}
+.launch-start-btn:active{background:#1a4a76}
+
+/* FOCUS MODE */
 .focus-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#1a0f2e;border-radius:12px;border:1px solid #3a1a5a;margin-bottom:10px}
 body.bright .focus-toggle-row{background:#f5f0ff;border-color:#d4b8f0}
 .focus-toggle-label{font-size:13px;color:#c678dd;font-weight:bold}
 .focus-toggle-sub{font-size:10px;color:#6b3fa0;margin-top:2px}
-body.bright .focus-toggle-label{color:#6b3fa0}
 .focus-sw{width:52px;height:28px;background:#2a1a3a;border-radius:14px;cursor:pointer;position:relative;flex-shrink:0;transition:background .25s}
 .focus-sw.on{background:#6b3fa0}
 .focus-sw-dot{width:24px;height:24px;background:#555;border-radius:50%;position:absolute;top:2px;left:2px;transition:all .25s}
 .focus-sw.on .focus-sw-dot{background:#e0c0ff;left:26px}
 body.bright .focus-sw{background:#dde3ed}
 body.bright .focus-sw.on{background:#6b3fa0}
-body.bright .focus-sw-dot{background:#aaa}
-body.bright .focus-sw.on .focus-sw-dot{background:#fff}
 #focus-section{display:none}
 #focus-section.active{display:block}
 .focus-card{background:#120a1f;border-radius:14px;padding:20px;border:1px solid #3a1a5a;border-left:5px solid #c678dd;margin-bottom:12px}
@@ -245,57 +280,14 @@ body.bright .focus-card{background:#f8f4ff;border-color:#d4b8f0;border-left-colo
 body.bright .focus-title{color:#1a1a2e}
 .focus-counter{font-size:11px;color:#9b6dca;margin-bottom:10px;text-align:center}
 .focus-pipe{display:flex;gap:4px;margin-bottom:14px}
-.fps{flex:1;padding:8px 2px;border-radius:6px;border:1px solid #2a1a3a;background:#0a0518;color:#444;font-size:10px;cursor:pointer;text-align:center;transition:all .2s}
+.fps{flex:1;padding:8px 2px;border-radius:6px;border:1px solid #2a1a3a;background:#0a0518;color:#444;font-size:10px;cursor:pointer;text-align:center}
 .fps.fas{color:#fff;background:#6b3fa0;border-color:#6b3fa0;font-weight:bold}
 .focus-note-input{width:100%;background:#0a0518;border:1px solid #2a1a3a;border-radius:8px;color:#aaa;font-size:12px;padding:10px;font-family:Arial;resize:none;min-height:56px;box-sizing:border-box;margin-bottom:10px}
-.focus-note-input:focus{outline:none;border-color:#6b3fa0;color:#fff}
-body.bright .focus-note-input{background:#fff;border-color:#d4b8f0;color:#333}
-body.bright .fps{background:#f0ebff;border-color:#d4b8f0;color:#888}
 .focus-act-row{display:flex;gap:8px;margin-bottom:8px}
 .focus-btn-next{flex:1;padding:12px;background:#6b3fa0;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer}
 .focus-btn-done{flex:1;padding:12px;background:#27ae60;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer}
 .focus-empty{text-align:center;color:#c678dd;font-size:15px;padding:30px 0;line-height:2}
-
-
-/* MODE SWITCHER */
-.mode-card{border-radius:12px;padding:14px;margin-bottom:10px;border:2px solid transparent;cursor:pointer;transition:all .2s}
-.mode-card.selected{border-color:#4a9fd4}
-.mode-card-simple{background:#0a1520}
-.mode-card-power{background:#0a1520}
-body.bright .mode-card-simple,.mode-card-power{background:#f8fafc}
-.mode-card-title{font-size:14px;font-weight:bold;color:#fff;margin-bottom:4px}
-body.bright .mode-card-title{color:#1a1a2e}
-.mode-card-desc{font-size:11px;color:#555;line-height:1.6}
-.mode-badge{display:inline-block;font-size:9px;padding:2px 8px;border-radius:10px;margin-bottom:6px;font-weight:bold}
-.mode-badge-simple{background:#1a3a1a;color:#4caf50}
-.mode-badge-power{background:#1a1a3a;color:#4a9fd4}
-
-
-/* FIRST LAUNCH SCREEN */
-#launch-screen{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f18;z-index:99999;overflow-y:auto;padding:30px 20px 40px;box-sizing:border-box}
-#launch-screen.active{display:block}
-.launch-logo{text-align:center;margin-bottom:8px;font-size:48px}
-.launch-title{text-align:center;font-size:22px;font-weight:bold;color:#fff;margin-bottom:4px}
-.launch-sub{text-align:center;font-size:12px;color:#555;margin-bottom:32px}
-.launch-section{font-size:10px;color:#4a9fd4;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}
-.launch-name-input{width:100%;background:#111827;border:1px solid #2a6496;border-radius:10px;color:#fff;font-size:16px;padding:14px;font-family:Arial;box-sizing:border-box;margin-bottom:24px}
-.launch-name-input:focus{outline:none;border-color:#4a9fd4}
-.launch-name-input::placeholder{color:#333}
-.launch-mode-card{border-radius:14px;padding:16px;margin-bottom:12px;border:2px solid #1e2a3a;cursor:pointer;transition:all .2s;background:#111827}
-.launch-mode-card.selected{border-color:#4a9fd4;background:#0a1a2a}
-.launch-mode-card.selected-simple{border-color:#4caf50;background:#0a1a0a}
-.launch-mode-badge{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:bold;display:inline-block;margin-bottom:8px}
-.launch-mode-title{font-size:15px;font-weight:bold;color:#fff;margin-bottom:5px}
-.launch-mode-desc{font-size:11px;color:#555;line-height:1.6}
-.launch-mode-features{margin-top:8px;font-size:10px;color:#444;line-height:1.8}
-.launch-start-btn{width:100%;padding:16px;background:#2a6496;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;margin-top:8px;transition:background .2s}
-.launch-start-btn:active{background:#1a4a76}
-body.bright #launch-screen{background:#f0f4f8}
-body.bright .launch-mode-card{background:#fff;border-color:#dde3ed}
-body.bright .launch-mode-card.selected{background:#e8f4ff;border-color:#2a6496}
-body.bright .launch-mode-card.selected-simple{background:#e8fff0;border-color:#27ae60}
-body.bright .launch-mode-title{color:#1a1a2e}
-
+body.bright .fps{background:#f0ebff;border-color:#d4b8f0;color:#888}
 
 /* PLAN MY DAY */
 #pmd-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f18;z-index:9998;overflow-y:auto;padding:20px;box-sizing:border-box}
@@ -310,88 +302,29 @@ body.bright .launch-mode-title{color:#1a1a2e}
 .pmd-q-time{font-size:11px;color:#4a9fd4;margin-bottom:12px}
 .pmd-q-label{font-size:11px;color:#666;margin-bottom:8px}
 .pmd-options{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-.pmd-opt{padding:7px 12px;border-radius:20px;border:1px solid #1e2a3a;background:#0a0f18;color:#aaa;font-size:11px;cursor:pointer;transition:all .2s}
+.pmd-opt{padding:7px 12px;border-radius:20px;border:1px solid #1e2a3a;background:#0a0f18;color:#aaa;font-size:11px;cursor:pointer}
 .pmd-opt.selected{background:#2a6496;color:#fff;border-color:#4a9fd4}
-.pmd-opt-green.selected{background:#1a4a1a;color:#4caf50;border-color:#4caf50}
 .pmd-next-btn{width:100%;padding:14px;background:#2a6496;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:bold;cursor:pointer;margin-top:8px}
-.pmd-generating{text-align:center;padding:40px 20px}
-.pmd-gen-icon{font-size:40px;margin-bottom:12px;animation:spin 2s linear infinite}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.pmd-generating{text-align:center;padding:60px 20px}
+.pmd-gen-icon{font-size:40px;margin-bottom:12px}
 .pmd-gen-text{font-size:14px;color:#4a9fd4;margin-bottom:8px}
 .pmd-gen-sub{font-size:11px;color:#555}
 .pmd-schedule-item{display:flex;gap:12px;padding:12px;background:#111827;border-radius:10px;margin-bottom:8px;border-left:4px solid #2a6496}
-.pmd-schedule-time{font-size:12px;color:#4a9fd4;font-weight:bold;min-width:45px;padding-top:2px}
-.pmd-schedule-body{flex:1}
+.pmd-schedule-time{font-size:12px;color:#4a9fd4;font-weight:bold;min-width:45px}
 .pmd-schedule-task{font-size:13px;color:#fff;font-weight:bold;margin-bottom:2px}
 .pmd-schedule-meta{font-size:10px;color:#555}
-.pmd-conflict{border-left-color:#e05555!important;background:#1a0a0a!important}
-.pmd-travel{border-left-color:#f0a500!important;background:#1a1000!important;opacity:.8}
 .pmd-close-btn{width:100%;padding:12px;background:transparent;border:1px solid #1e2a3a;color:#555;border-radius:10px;font-size:13px;cursor:pointer;margin-top:8px}
-body.bright #pmd-overlay{background:#f0f4f8}
 body.bright .pmd-q-card{background:#fff;border-color:#dde3ed}
 body.bright .pmd-q-task{color:#1a1a2e}
 body.bright .pmd-opt{background:#f8fafc;border-color:#dde3ed;color:#555}
-body.bright .pmd-schedule-item{background:#fff;border-color:#dde3ed}
+body.bright .pmd-schedule-item{background:#fff}
 body.bright .pmd-schedule-task{color:#1a1a2e}
 
 </style>
-<link rel="manifest" id="pwa-manifest">
-<meta name="theme-color" content="#0a0f18">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Ops Center">
-<script>
-// ── PWA MANIFEST ──
-const manifestObj={
-  name:"My Operations Center",
-  short_name:"Ops Center",
-  description:"Daily operations planner",
-  start_url:"./",
-  display:"standalone",
-  background_color:"#0a0f18",
-  theme_color:"#0a0f18",
-  orientation:"portrait",
-  icons:[
-    {src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='24' fill='%230a0f18'/%3E%3Ctext x='96' y='130' font-size='110' text-anchor='middle' fill='%234a9fd4'%3E%E2%9A%99%3C/text%3E%3C/svg%3E",sizes:"192x192",type:"image/svg+xml",purpose:"any maskable"},
-    {src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='64' fill='%230a0f18'/%3E%3Ctext x='256' y='360' font-size='300' text-anchor='middle' fill='%234a9fd4'%3E%E2%9A%99%3C/text%3E%3C/svg%3E",sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}
-  ]
-};
-const mBlob=new Blob([JSON.stringify(manifestObj)],{type:'application/json'});
-document.getElementById('pwa-manifest').href=URL.createObjectURL(mBlob);
-
-// ── SERVICE WORKER ──
-if('serviceWorker' in navigator){
-  const swCode=`
-    self.addEventListener('install',e=>{self.skipWaiting();});
-    self.addEventListener('activate',e=>{self.clients.claim();});
-    self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));});
-  `;
-  const swBlob=new Blob([swCode],{type:'application/javascript'});
-  navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
-}
-
-// ── INSTALL PROMPT ──
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt',e=>{
-  e.preventDefault();deferredPrompt=e;
-  const btn=document.getElementById('pwa-install-btn');
-  if(btn)btn.style.display='block';
-});
-window.addEventListener('appinstalled',()=>{
-  const btn=document.getElementById('pwa-install-btn');
-  if(btn)btn.style.display='none';
-});
-function installPWA(){
-  if(!deferredPrompt)return;
-  deferredPrompt.prompt();
-  deferredPrompt.userChoice.then(()=>{deferredPrompt=null;});
-}
-</script>
 </head>
 <body>
 <div class="hdr">
-<div id="pwa-install-btn" style="display:none;margin-top:6px"><button onclick="installPWA()" style="background:#2a6496;color:#fff;border:none;border-radius:14px;padding:5px 16px;font-size:11px;cursor:pointer;font-weight:bold">⬇ Install App</button></div>
-  <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v2.5.2</span></h1>
+  <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v3.0</span></h1>
   <div class="dt" id="dtLine"></div>
   <div class="theme-toggle">
     <div class="theme-btn active" id="theme-dark" onclick="setTheme('dark')">🌙 Dark</div>
@@ -399,23 +332,21 @@ function installPWA(){
   </div>
 </div>
 <div class="tabs">
-  <div class="tab" data-tab="today" active">Today</div>
-  <div class="tab" data-tab="regwork"">Regular <span class="bx" id="b-rw">0</span></div>
-  <div class="tab" data-tab="projwork"">Pipeline <span class="bx" id="b-pw">0</span></div>
-  <div class="tab" data-tab="projects"">Projects & Ideas</div>
-  <div class="tab" data-tab="schedule"">Schedule</div>
-  <div class="tab" data-tab="overdue"">Overdue <span class="bx" id="b-ov">0</span></div>
-  <div class="tab" data-tab="progress"">Progress</div>
-  <div class="tab" data-tab="history"">History</div>
-  <div class="tab" data-tab="tomorrow"">Tomorrow</div>
-  <div class="tab" data-tab="capture"">Capture</div>
-  <div class="tab" data-tab="settings"">⚙ Settings</div>
+  <div class="tab active" onclick="showTab('today',this)">Today</div>
+  <div class="tab" onclick="showTab('regwork',this)">Regular <span class="bx" id="b-rw">0</span></div>
+  <div class="tab" onclick="showTab('projwork',this)">Pipeline <span class="bx" id="b-pw">0</span></div>
+  <div class="tab" onclick="showTab('projects',this)">Projects & Ideas</div>
+  <div class="tab" onclick="showTab('schedule',this)">Schedule</div>
+  <div class="tab" onclick="showTab('overdue',this)">Overdue <span class="bx" id="b-ov">0</span></div>
+  <div class="tab" onclick="showTab('progress',this)">Progress</div>
+  <div class="tab" onclick="showTab('history',this)">History</div>
+  <div class="tab" onclick="showTab('tomorrow',this)">Tomorrow</div>
+  <div class="tab" onclick="showTab('capture',this)">Capture</div>
+  <div class="tab" onclick="showTab('settings',this)">⚙ Settings</div>
 </div>
 
 <!-- ═══ TODAY ═══ -->
 <div class="panel active" id="panel-today">
-
-  <!-- FOCUS MODE TOGGLE -->
   <div class="focus-toggle-row">
     <div>
       <div class="focus-toggle-label">⚡ Focus Mode</div>
@@ -423,8 +354,6 @@ function installPWA(){
     </div>
     <div class="focus-sw" id="focus-sw" onclick="toggleFocusMode()"><div class="focus-sw-dot"></div></div>
   </div>
-
-  <!-- FOCUS SECTION -->
   <div id="focus-section">
     <div class="focus-counter" id="focus-counter"></div>
     <div id="focus-content"></div>
@@ -433,7 +362,6 @@ function installPWA(){
       <button class="focus-btn-done" onclick="focusMarkDone()">✓ Done & Next</button>
     </div>
   </div>
-
   <div class="sec">
     <div class="st">How is today?</div>
     <div style="display:flex;gap:5px" id="energy-btns">
@@ -450,8 +378,8 @@ function installPWA(){
     <button class="btn btn-gr btn-sm" style="margin-top:8px;width:100%" onclick="acceptCF()">✓ Accept all into today</button>
   </div>
 
-  <div class="sec" id="rw-block-sec">
-    <div class="st" id="rw-block-header">09:30–17:00 Regular Work</div>
+  <div class="sec" id="rw-sec">
+    <div class="st" id="rw-hdr">09:30–17:00 Regular Work</div>
     <div class="sec-hint" style="font-size:10px;color:#333;margin-bottom:6px;line-height:1.6">Type your tasks, one per line. Include time if needed.<br><span style="color:#4a9fd4">e.g.</span> Call Suraj @5pm &nbsp;·&nbsp; Meet Mr Desai &nbsp;·&nbsp; Check machine &nbsp;·&nbsp; Give quotes</div>
     <textarea class="sec-input" id="rw-input" placeholder="Call Suraj @5pm&#10;Meet Mr Desai&#10;Check machine&#10;Give quotes&#10;Meet M/s Automation"></textarea>
     <button class="parse-btn" onclick="parseInput('regular')">📋 Create Pipeline →</button>
@@ -470,10 +398,10 @@ function installPWA(){
     </div>
   </div>
 
-  <div class="sec" id="pw-block-sec">
-    <div class="st" id="pw-block-header">17:00–19:00 Project Work</div>
-    <div class="sec-hint" style="font-size:10px;color:#333;margin-bottom:6px;line-height:1.6">Type project tasks. Use [tag] for project: [p1] [p2] [p3]<br><span style="color:#4a9fd4">e.g.</span> Design new product [p1] &nbsp;·&nbsp; Call vendor @6pm [p2]</div>
-    <textarea class="sec-input" id="pw-input" placeholder="Design new product [p1]&#10;Call vendor @6pm [p2]&#10;Review specs [p3]"></textarea>
+  <div class="sec" id="pw-sec">
+    <div class="st" id="pw-hdr">17:00–19:00 Project Work</div>
+    <div class="sec-hint" style="font-size:10px;color:#333;margin-bottom:6px;line-height:1.6">Type project tasks. Use [tag] for project: [p1] [p2] [p3]<br><span style="color:#4a9fd4">e.g.</span> Design new [p1] · Call vendor [p2]</div>
+    <textarea class="sec-input" id="pw-input" placeholder="New task [p1]&#10;Call vendor [p2]"></textarea>
     <button class="parse-btn" onclick="parseInput('project')">📋 Create Pipeline →</button>
     <div id="pw-preview" style="display:none">
       <div style="font-size:10px;color:#4caf50;margin-bottom:6px;font-weight:bold">Review:</div>
@@ -485,28 +413,25 @@ function installPWA(){
       <div class="add-row">
         <input type="text" id="pw-add" placeholder="New task..." />
         <select id="pw-proj" style="width:90px">
-          <option value="reg">— Select —</option>
+          <option value="reg">— Project —</option>
         </select>
         <input type="time" id="pw-time" style="width:75px" />
         <button class="btn btn-bl btn-sm" onclick="addSingle('project')">+ Add</button>
       </div>
     </div>
   </div>
-  <div class="sec" id="momentum-sec">
+
+  <div class="sec" id="mom-sec">
     <div class="st">Project Momentum <span class="st-act" onclick="showTab('projects',document.querySelector('.tab:nth-child(4))'))">Manage Projects →</span></div>
     <div id="momentum-list"></div>
   </div>
-
-  <button onclick="startPlanMyDay()" style="width:100%;padding:14px;background:linear-gradient(135deg,#1a3a5c,#2a6496);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:bold;cursor:pointer;margin-bottom:4px;letter-spacing:.3px">🗓 Plan My Day →</button>
+  <button onclick="startPlanMyDay()" style="width:100%;padding:14px;background:linear-gradient(135deg,#1a3a5c,#2a6496);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:bold;cursor:pointer;margin-bottom:4px">🗓 Plan My Day →</button>
   <div style="font-size:10px;color:#444;text-align:center;margin-bottom:8px">Smart scheduling · Powered by AI</div>
 </div>
 
 <!-- ═══ REGULAR WORK ═══ -->
 <div class="panel" id="panel-regwork">
-  <div id="simple-mode-rw" style="display:none;margin-bottom:10px">
-    <div style="font-size:11px;color:#555;margin-bottom:8px">Your tasks for today — tap Done ✓ when complete.</div>
-  </div>
-  <div class="sboxes" id="rw-stage-boxes">
+  <div class="sboxes">
     <div class="sbox fbox" id="rwf-0" onclick="setFilter('rw',0)"><div class="snum" style="color:#2a6496" id="rw0">0</div><div class="slbl">Registered</div></div>
     <div class="sbox fbox" id="rwf-1" onclick="setFilter('rw',1)"><div class="snum" style="color:#f0a500" id="rw1">0</div><div class="slbl">Follow Up</div></div>
     <div class="sbox fbox" id="rwf-2" onclick="setFilter('rw',2)"><div class="snum" style="color:#d44ad4" id="rw2">0</div><div class="slbl">Executing</div></div>
@@ -665,13 +590,12 @@ let state={
   username:'',
   appMode:'power',
   firstLaunch:true,
-  tabNames:{regwork:'Regular',projwork:'Pipeline'},
-  tabVisibility:{schedule:true,overdue:true,history:true,capture:true},
-  notifSettings:{task:true,meeting_early:true,meeting_now:true,morning:false,reminderMins:15},
   workBlocks:[
-    {id:'regular',label:'Regular Work',enabled:true,timeFrom:'09:30',timeTo:'17:00'},
-    {id:'project',label:'Project Work',enabled:true,timeFrom:'17:00',timeTo:'19:00'}
-  ]
+    {id:'rw',label:'Regular Work',enabled:true,timeFrom:'09:30',timeTo:'17:00'},
+    {id:'pw',label:'Project Work',enabled:true,timeFrom:'17:00',timeTo:'19:00'}
+  ],
+  notifSettings:{task:true,meeting_early:true,meeting_now:true,morning:false,reminderMins:15},
+  tabVisibility:{schedule:true,overdue:true,history:true,capture:true}
 };
 
 // ── STORAGE ──
@@ -683,6 +607,11 @@ function save(){
 function load(){
   try{const s=localStorage.getItem('ops_v3');if(s){const p=JSON.parse(s);// merge projects carefully
     state={...state,...p};}}catch(e){}
+  // Ensure tab visibility defaults — all optional tabs ON by default
+  if(!state.tabVisibility)state.tabVisibility={};
+  ['schedule','overdue','history','capture'].forEach(function(id){
+    if(state.tabVisibility[id]===undefined)state.tabVisibility[id]=true;
+  });
   if(document.getElementById('rw-input'))document.getElementById('rw-input').value=state.workBlock||'';
   if(document.getElementById('pw-input'))document.getElementById('pw-input').value=state.projBlock||'';
   restoreEnergy();
@@ -690,11 +619,10 @@ function load(){
   checkCF();renderAll();renderCaptures();updateBadges();
   renderProjectsList();renderSchedule();renderHistory();
   updateHeaderName();
-  rebuildTabs();
+  applyTabVisibility();
   updateTodayBlockHeaders();
   populateProjDropdown();
   applyAppMode();
-  applyTabNames();
 }
 
 function logHistory(text,tag,tagClass){
@@ -716,6 +644,7 @@ function showTab(id,el){
   if(id==='progress')renderProgress();
   if(id==='settings')renderSettingsPanel();
   if(id==='today')populateProjDropdown();
+  if(id==='projects'){renderProjectsList();populateProjDropdown();}
 }
 
 // ── ENERGY ──
@@ -803,14 +732,10 @@ function addSingle(type){
   const time=document.getElementById(prefix+'-time').value||'';
   const proj=type==='project'?document.getElementById('pw-proj').value:'reg';
   const id=Date.now();
-  // resolve project name for history
-  const projObj=(state.projects||[]).find(p=>p.id===proj);
-  const projName=projObj?projObj.name:(PN[proj]||'Regular');
-  const projColor=projObj?projObj.color:'#4a9fd4';
-  state.items.push({id,title,type,proj,stage:0,who:'Me',date:todayStr,time,notes:[],registeredOn:todayStr,carriedFrom:null,carriedForward:false,priority:'medium',projName,projColor});
-  logHistory('Added: '+title,projName,'tag-reg');
+  state.items.push({id,title,type,proj,stage:0,who:'Me',date:todayStr,time,notes:[],registeredOn:todayStr,carriedFrom:null,carriedForward:false,priority:'medium'});
+  logHistory(`Added: ${title}`,PN[proj]||'Regular',PT[proj]||'tag-reg');
   document.getElementById(prefix+'-add').value='';document.getElementById(prefix+'-time').value='';
-  save();renderAll();updateBadges();renderHistory();populateProjDropdown();
+  save();renderAll();updateBadges();renderHistory();
 }
 
 // ── CARRY FORWARD ──
@@ -864,17 +789,15 @@ function setPriority(id,val){
 function itemCard(item){
   const isOver=item.stage<3&&item.date&&item.date<todayStr;
   const isToday=item.stage<3&&item.date&&item.date===todayStr;
-  const isDone=item.stage===3;
   const pri=item.priority||'medium';
   const priLabel={high:'▲ High',medium:'● Medium',low:'▽ Low'};
   const priClass={high:'pri-high',medium:'pri-medium',low:'pri-low'};
   const priColor={high:'#c97b6a',medium:'#7daa5a',low:'#5a8ab0'};
-  const bc=isDone?'#27ae60':isOver?'#e05555':priColor[pri];
-  const doneBg=isDone?'background:#0a1f0a;opacity:0.85;':'';
-  return `<div class="wc" style="border-left-color:${bc};border-left-width:4px;${doneBg}">
-    <div class="wc-top"><div class="wc-title" style="${isDone?'text-decoration:line-through;color:#4caf50;':''}"> ${item.title}</div><span class="wc-del" onclick="delItem(${item.id})">×</span></div>
+  const bc=isOver?'#e05555':priColor[pri];
+  return `<div class="wc" style="border-left-color:${bc};border-left-width:4px">
+    <div class="wc-top"><div class="wc-title">${item.title}</div><span class="wc-del" onclick="delItem(${item.id})">×</span></div>
     <div class="wc-meta">
-      <span class="wtag" style="background:${item.projColor?item.projColor+'22':'#1e2a3a'};color:${item.projColor||'#aaa'};border-radius:5px;font-size:9px;padding:2px 6px">${item.projName||(PN[item.proj]||'Regular')}</span>
+      <span class="wtag ${PT[item.proj]||'tag-reg'}">${PN[item.proj]||'Regular'}</span>
       <span class="pri-tag ${priClass[pri]}">${priLabel[pri]}</span>
       ${isOver?'<span class="overdue-p">Overdue</span>':''}
       ${isToday&&item.time?`<span class="wtime-badge">⏰ ${item.time}</span>`:''}
@@ -1373,35 +1296,100 @@ function fmtDate(s){if(!s)return'—';const d=new Date(s+'T00:00:00');return d.g
 document.getElementById('capIn').addEventListener('keypress',e=>{if(e.key==='Enter')addCap();});
 ['rw-add','pw-add'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('keypress',e=>{if(e.key==='Enter'){if(id==='rw-add')addSingle('regular');else addSingle('project');}});});
 
-
-
-
-
-
-// ── POPULATE PROJECT DROPDOWN ──
-function populateProjDropdown(){
-  var sel=document.getElementById('pw-proj');
-  if(!sel)return;
-  var projects=(state.projects||[]).filter(function(p){return p.type==='project';});
-  var current=sel.value;
-  sel.innerHTML='<option value="reg">— Select —</option>';
-  projects.forEach(function(p){
-    var opt=document.createElement('option');
-    opt.value=p.id;
-    opt.textContent=p.name;
-    if(p.id===current)opt.selected=true;
-    sel.appendChild(opt);
-  });
-  // fallback if no projects
-  if(!projects.length){
-    var opt=document.createElement('option');
-    opt.value='reg';opt.textContent='Add projects first';
-    sel.appendChild(opt);
+// ── SETTINGS FUNCTIONS ──
+function saveUsername(){
+  var v=document.getElementById('set-username');
+  if(!v||!v.value.trim())return;
+  state.username=v.value.trim();
+  save();
+  updateHeaderName();
+  var ok=document.getElementById('username-saved');
+  if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},2000);}
+}
+function updateHeaderName(){
+  var h=document.querySelector('.hdr h1');
+  if(!h)return;
+  if(state.username){
+    h.innerHTML='⚙ '+state.username+"'s Ops Center <span style='font-size:10px;color:#444;font-weight:normal'>v3.0</span>";
   }
+}
+function renderSettingsPanel(){
+  var u=document.getElementById('set-username');
+  if(u&&state.username)u.value=state.username;
+  var t=state.theme||'dark';
+  var sd=document.getElementById('set-dark');var sb=document.getElementById('set-bright');
+  if(sd){sd.style.background=t==='dark'?'#2a6496':'#111827';sd.style.color=t==='dark'?'#fff':'#aaa';sd.style.borderColor=t==='dark'?'#4a9fd4':'#1e2a3a';}
+  if(sb){sb.style.background=t==='bright'?'#2a6496':'#111827';sb.style.color=t==='bright'?'#fff':'#aaa';sb.style.borderColor=t==='bright'?'#4a9fd4':'#1e2a3a';}
+  renderTabVis();
+  renderWorkBlockSettings();
+  renderNotifToggles();
+  renderReminderMins();
+  applyAppMode();
+}
+function resetApp(){
+  if(!confirm('Reset ALL data? Cannot be undone.'))return;
+  localStorage.removeItem('ops_v3');
+  location.reload();
+}
+
+// ── TAB VISIBILITY ──
+var OPT_TABS_LIST=[
+  {id:'schedule',label:'Schedule'},
+  {id:'overdue',label:'Overdue'},
+  {id:'history',label:'History'},
+  {id:'capture',label:'Capture'}
+];
+function renderTabVis(){
+  var el=document.getElementById('tab-vis-list');
+  if(!el)return;
+  var tv=state.tabVisibility||{};
+  var html='';
+  for(var i=0;i<OPT_TABS_LIST.length;i++){
+    var t=OPT_TABS_LIST[i];
+    var on=tv[t.id]!==false;
+    html+='<div class="tog-row">';
+    html+='<span class="tog-label">'+t.label+'</span>';
+    html+='<div class="sw'+(on?' on':'')+'" id="stv-'+t.id+'" onclick="toggleTabVis(this,\''+t.id+'\')">';
+    html+='<div class="sw-dot"></div></div>';
+    html+='</div>';
+  }
+  el.innerHTML=html;
+}
+function toggleTabVis(el,id){
+  if(!state.tabVisibility)state.tabVisibility={};
+  state.tabVisibility[id]=!(state.tabVisibility[id]!==false);
+  el.classList.toggle('on',state.tabVisibility[id]!==false);
+  save();
+  applyTabVisibility();
+}
+function applyTabVisibility(){
+  var tv=state.tabVisibility||{};
+  OPT_TABS_LIST.forEach(function(t){
+    var on=tv[t.id]!==false;
+    document.querySelectorAll('.tab').forEach(function(tb){
+      var oc=tb.getAttribute('onclick')||'';
+      if(oc.indexOf("'"+t.id+"'")>-1)tb.style.display=on?'':'none';
+    });
+  });
 }
 
 // ── WORK BLOCKS ──
-function toggleWB(el,id){
+function renderWorkBlockSettings(){
+  var blocks=state.workBlocks||[];
+  var defaults={rw:{tf:'09:30',tt:'17:00',lbl:'Regular Work'},pw:{tf:'17:00',tt:'19:00',lbl:'Project Work'}};
+  blocks.forEach(function(wb){
+    var def=defaults[wb.id]||{};
+    var sw=document.getElementById('swb-'+wb.id);
+    var lbl=document.getElementById('wbl-'+wb.id);
+    var tf=document.getElementById('wbf-'+wb.id);
+    var tt=document.getElementById('wbt-'+wb.id);
+    if(sw){if(wb.enabled)sw.classList.add('on');else sw.classList.remove('on');}
+    if(lbl)lbl.value=wb.label||def.lbl||'';
+    if(tf)tf.value=wb.timeFrom||def.tf||'';
+    if(tt)tt.value=wb.timeTo||def.tt||'';
+  });
+}
+function toggleWorkBlock(el,id){
   var wb=(state.workBlocks||[]).find(function(b){return b.id===id;});
   if(!wb)return;
   wb.enabled=!wb.enabled;
@@ -1409,91 +1397,54 @@ function toggleWB(el,id){
   save();
   updateTodayBlockHeaders();
 }
-
 function saveWorkBlocks(){
   (state.workBlocks||[]).forEach(function(wb){
-    var lbl=document.getElementById('wb-label-'+wb.id);
-    var frm=document.getElementById('wb-from-'+wb.id);
-    var to=document.getElementById('wb-to-'+wb.id);
+    var lbl=document.getElementById('wbl-'+wb.id);
+    var tf=document.getElementById('wbf-'+wb.id);
+    var tt=document.getElementById('wbt-'+wb.id);
     if(lbl)wb.label=lbl.value||wb.label;
-    if(frm)wb.timeFrom=frm.value;
-    if(to)wb.timeTo=to.value;
+    if(tf)wb.timeFrom=tf.value;
+    if(tt)wb.timeTo=tt.value;
   });
   save();
   updateTodayBlockHeaders();
   var ok=document.getElementById('wb-saved');
   if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},2000);}
 }
-
 function updateTodayBlockHeaders(){
   var blocks=state.workBlocks||[];
-  var rw=blocks.find(function(b){return b.id==='regular';});
-  var pw=blocks.find(function(b){return b.id==='project';});
-  var rwH=document.getElementById('rw-block-header');
-  var pwH=document.getElementById('pw-block-header');
-  var rwSec=document.getElementById('rw-block-sec');
-  var pwSec=document.getElementById('pw-block-sec');
-  if(rwH&&rw)rwH.textContent=(rw.timeFrom||'09:30')+'–'+(rw.timeTo||'17:00')+' '+(rw.label||'Regular Work');
-  if(pwH&&pw)pwH.textContent=(pw.timeFrom||'17:00')+'–'+(pw.timeTo||'19:00')+' '+(pw.label||'Project Work');
-  if(rwSec&&rw)rwSec.style.display=rw.enabled?'':'none';
-  if(pwSec&&pw)pwSec.style.display=pw.enabled?'':'none';
-}
-
-function renderWorkBlocks(){
-  var defaults={regular:{label:'Regular Work',timeFrom:'09:30',timeTo:'17:00'},project:{label:'Project Work',timeFrom:'17:00',timeTo:'19:00'}};
-  var blocks=state.workBlocks||[];
-  blocks.forEach(function(wb){
-    var def=defaults[wb.id]||{};
-    var sw=document.getElementById('sw-wb-'+wb.id);
-    var lbl=document.getElementById('wb-label-'+wb.id);
-    var frm=document.getElementById('wb-from-'+wb.id);
-    var to=document.getElementById('wb-to-'+wb.id);
-    if(sw){if(wb.enabled){sw.classList.add('on');}else{sw.classList.remove('on');}}
-    if(lbl)lbl.value=wb.label||def.label||'';
-    if(frm)frm.value=wb.timeFrom||def.timeFrom||'';
-    if(to)to.value=wb.timeTo||def.timeTo||'';
-  });
+  var rw=blocks.find(function(b){return b.id==='rw';});
+  var pw=blocks.find(function(b){return b.id==='pw';});
+  var rh=document.getElementById('rw-hdr');
+  var ph=document.getElementById('pw-hdr');
+  var rs=document.getElementById('rw-sec');
+  var ps=document.getElementById('pw-sec');
+  if(rh&&rw)rh.textContent=(rw.timeFrom||'09:30')+'–'+(rw.timeTo||'17:00')+' '+(rw.label||'Regular Work');
+  if(ph&&pw)ph.textContent=(pw.timeFrom||'17:00')+'–'+(pw.timeTo||'19:00')+' '+(pw.label||'Project Work');
+  if(rs&&rw)rs.style.display=rw.enabled?'':'none';
+  if(ps&&pw)ps.style.display=pw.enabled?'':'none';
 }
 
 // ── NOTIFICATIONS ──
+function renderNotifToggles(){
+  var ns=state.notifSettings||{};
+  ['task','meeting_early','meeting_now','morning'].forEach(function(k){
+    var sw=document.getElementById('swn-'+k);
+    if(!sw)return;
+    if(ns[k])sw.classList.add('on');else sw.classList.remove('on');
+  });
+}
 function toggleNotif(el,key){
   if(!state.notifSettings)state.notifSettings={};
   state.notifSettings[key]=!state.notifSettings[key];
   el.classList.toggle('on',state.notifSettings[key]);
   save();
 }
-
-function requestNotifPermission(){
-  if(!('Notification' in window)){
-    document.getElementById('notif-status').textContent='Not supported in this browser';
-    return;
-  }
-  Notification.requestPermission().then(function(p){
-    updateNotifStatus(p);
-    if(p==='granted')scheduleAllNotifications();
-  });
-}
-
-function updateNotifStatus(p){
-  var btn=document.getElementById('notif-btn');
-  var st=document.getElementById('notif-status');
-  if(!st)return;
-  if(p==='granted'){
-    st.textContent='✓ Notifications enabled';st.style.color='#4caf50';
-    if(btn)btn.style.display='none';
-  } else if(p==='denied'){
-    st.textContent='✗ Blocked — enable in phone settings';st.style.color='#e05555';
-  } else {
-    st.textContent='Tap button to enable';st.style.color='#555';
-  }
-}
-
 function saveReminderMins(val){
   if(!state.notifSettings)state.notifSettings={};
   state.notifSettings.reminderMins=parseInt(val)||0;
   save();
 }
-
 function renderReminderMins(){
   var sel=document.getElementById('reminder-mins');
   if(!sel)return;
@@ -1501,644 +1452,317 @@ function renderReminderMins(){
   if(mins===undefined)mins=15;
   sel.value=String(mins);
 }
-
+function requestNotifPermission(){
+  if(!('Notification' in window)){
+    document.getElementById('notif-status').textContent='Not supported';return;
+  }
+  Notification.requestPermission().then(function(p){updateNotifStatus(p);if(p==='granted')scheduleAllNotifications();});
+}
+function updateNotifStatus(p){
+  var btn=document.getElementById('notif-perm-btn');
+  var st=document.getElementById('notif-status');
+  if(!st)return;
+  if(p==='granted'){st.textContent='✓ Notifications enabled';st.style.color='#4caf50';if(btn)btn.style.display='none';}
+  else if(p==='denied'){st.textContent='✗ Blocked — enable in phone settings';st.style.color='#e05555';}
+  else{st.textContent='Tap button to enable';st.style.color='#555';}
+}
+function initNotifStatus(){
+  if('Notification' in window)updateNotifStatus(Notification.permission);
+}
 function scheduleAllNotifications(){
   if(Notification.permission!=='granted')return;
   var ns=state.notifSettings||{};
   var reminderMins=ns.reminderMins!==undefined?ns.reminderMins:15;
   var now2=new Date();
-  var todayItems=state.items.filter(function(x){return x.stage<3&&x.date===todayStr&&x.time;});
-  todayItems.forEach(function(item){
-    var parts=item.time.split(':');
-    var h=parseInt(parts[0]);var m=parseInt(parts[1]);
+  state.items.filter(function(x){return x.stage<3&&x.date===todayStr&&x.time;}).forEach(function(item){
+    var parts=item.time.split(':');var h=parseInt(parts[0]);var m=parseInt(parts[1]);
     var taskTime=new Date();taskTime.setHours(h,m,0,0);
     var delay=taskTime-now2;
     var isMeeting=/meet|call|visit/i.test(item.title);
-    if(ns.task&&delay>0){
-      setTimeout(function(){showNotif('⏰ '+item.title,'Time: '+item.time);},delay);
-    }
-    // Reminder buffer — X mins before task
-    if(ns.task&&reminderMins>0){
-      var earlyDelay=delay-(reminderMins*60000);
-      if(earlyDelay>0){
-        setTimeout(function(){showNotif('⏰ Coming up: '+item.title,'In '+reminderMins+' mins · at '+item.time);},earlyDelay);
-      }
-    }
-    if(ns.meeting_early&&isMeeting&&delay>3600000){
-      setTimeout(function(){showNotif('📅 Meeting in 1 hour',item.title+' at '+item.time);},delay-3600000);
-    }
-    if(ns.meeting_now&&isMeeting&&delay>0){
-      setTimeout(function(){showNotif('🔔 Meeting now',item.title);},delay+500);
-    }
+    if(ns.task&&delay>0)setTimeout(function(){showNotif('⏰ '+item.title,'at '+item.time);},delay);
+    if(ns.task&&reminderMins>0){var ed=delay-(reminderMins*60000);if(ed>0)setTimeout(function(){showNotif('⏰ Coming up: '+item.title,'in '+reminderMins+' mins');},ed);}
+    if(ns.meeting_early&&isMeeting&&delay>3600000)setTimeout(function(){showNotif('📅 Meeting in 1 hour',item.title);},delay-3600000);
+    if(ns.meeting_now&&isMeeting&&delay>0)setTimeout(function(){showNotif('🔔 Meeting now',item.title);},delay+500);
   });
-  if(ns.morning){
-    var morning=new Date();morning.setHours(9,0,0,0);
-    var mDelay=morning-now2;
-    if(mDelay>0){
-      setTimeout(function(){
-        var pending=state.items.filter(function(x){return x.stage<3&&x.date===todayStr;}).length;
-        showNotif('🌅 Good morning!','You have '+pending+' tasks today.');
-      },mDelay);
-    }
-  }
+  if(ns.morning){var morning=new Date();morning.setHours(9,0,0,0);var md=morning-now2;if(md>0)setTimeout(function(){showNotif('🌅 Good morning!',state.items.filter(function(x){return x.stage<3&&x.date===todayStr;}).length+' tasks today.');},md);}
 }
-
 function showNotif(title,body){
-  if(Notification.permission==='granted'){
-    new Notification(title,{body:body});
-  }
-}
-
-function initNotifStatus(){
-  if('Notification' in window){
-    updateNotifStatus(Notification.permission);
-  }
-}
-
-
-function renderNotifToggles(){
-  var ns=state.notifSettings||{};
-  ['task','meeting_early','meeting_now','morning'].forEach(function(k){
-    var sw=document.getElementById('sw-notif-'+k);
-    if(!sw)return;
-    if(ns[k]){sw.classList.add('on');}else{sw.classList.remove('on');}
-  });
-}
-
-// ── TAB VISIBILITY ──
-const OPT_TABS=[
-  {id:'schedule',label:'Schedule'},
-  {id:'overdue',label:'Overdue'},
-  {id:'history',label:'History'},
-  {id:'capture',label:'Capture'}
-];
-
-function renderTabVis(){
-  var tv=state.tabVisibility||{};
-  OPT_TABS.forEach(function(t){
-    var sw=document.getElementById('sw-'+t.id);
-    if(!sw)return;
-    var on=tv[t.id]!==false;
-    if(on){sw.classList.add('on');}else{sw.classList.remove('on');}
-  });
-}
-
-function toggleTab(el,id){
-  if(!state.tabVisibility)state.tabVisibility={};
-  var wasOn=state.tabVisibility[id]!==false;
-  state.tabVisibility[id]=!wasOn;
-  el.classList.toggle('on',!wasOn);
-  save();
-  rebuildTabs();
-}
-
-function rebuildTabs(){
-  syncAllTabs();
-}
-
-// ── SETTINGS FUNCTIONS ──
-function saveUsername(){
-  const v=document.getElementById('set-username');
-  if(!v||!v.value.trim())return;
-  state.username=v.value.trim();
-  save();
-  updateHeaderName();
-  const ok=document.getElementById('username-saved');
-  if(ok){ok.style.display='block';setTimeout(()=>ok.style.display='none',2000);}
-}
-
-function updateHeaderName(){
-  const h=document.querySelector('.hdr h1');
-  if(!h)return;
-  if(state.username){
-    h.innerHTML='⚙ '+state.username+"'s Ops Center <span style='font-size:10px;color:#444;font-weight:normal'>v2.5.2</span>";
-  }
-}
-
-function renderSettingsPanel(){
-  renderTabVis();
-  renderWorkBlocks();
-  renderTabNames();
-  initNotifStatus();
-  renderNotifToggles();
-  renderReminderMins();
-  applyAppMode();
-  const u=document.getElementById('set-username');
-  if(u&&state.username)u.value=state.username;
-  const t=state.theme||'dark';
-  const sd=document.getElementById('set-dark');
-  const sb=document.getElementById('set-bright');
-  if(sd){sd.style.background=t==='dark'?'#2a6496':'#111827';sd.style.color=t==='dark'?'#fff':'#aaa';sd.style.borderColor=t==='dark'?'#4a9fd4':'#1e2a3a';}
-  if(sb){sb.style.background=t==='bright'?'#2a6496':'#111827';sb.style.color=t==='bright'?'#fff':'#aaa';sb.style.borderColor=t==='bright'?'#4a9fd4':'#1e2a3a';}
-}
-
-function resetApp(){
-  if(!confirm('Reset ALL data? Cannot be undone.'))return;
-  localStorage.removeItem('ops_v3');
-  location.reload();
-}
-
-
-
-
-
-
-// ── PLAN MY DAY ──
-var pmdTaskData=[];
-
-function startPlanMyDay(){
-  // Get all today's incomplete tasks with times
-  var timedTasks=state.items.filter(function(x){
-    return x.stage<3&&x.time&&x.date===todayStr;
-  });
-  // Get all tasks without times too
-  var allTasks=state.items.filter(function(x){
-    return x.stage<3&&x.date===todayStr;
-  });
-
-  if(!allTasks.length){
-    alert('No tasks for today. Add tasks first!');return;
-  }
-
-  // Build question set for each task
-  pmdTaskData=allTasks.map(function(item){
-    var isMeeting=/meet|meeting/i.test(item.title);
-    var isVisit=/visit|visit/i.test(item.title);
-    var isCall=/call|speak|talk/i.test(item.title);
-    var needsLocation=isMeeting||isVisit;
-    var needsDuration=isMeeting||isVisit||isCall;
-    return {
-      item:item,
-      isMeeting:isMeeting,
-      isVisit:isVisit,
-      isCall:isCall,
-      needsLocation:needsLocation,
-      needsDuration:needsDuration,
-      location:isCall?'phone':null,
-      duration:null,
-      travelTime:null
-    };
-  });
-
-  // Build questions UI
-  var ql=document.getElementById('pmd-questions-list');
-  var html='';
-
-  // Only show questions for tasks that need them
-  var tasksNeedingInfo=pmdTaskData.filter(function(t){return t.needsLocation||t.needsDuration;});
-
-  if(!tasksNeedingInfo.length){
-    // No questions needed — go straight to generate
-    submitPlanMyDay();return;
-  }
-
-  html+='<div style="font-size:11px;color:#4a9fd4;margin-bottom:12px">Quick questions about your tasks:</div>';
-
-  pmdTaskData.forEach(function(td,idx){
-    if(!td.needsLocation&&!td.needsDuration)return;
-    html+='<div class="pmd-q-card">';
-    html+='<div class="pmd-q-task">'+td.item.title+'</div>';
-    if(td.item.time)html+='<div class="pmd-q-time">⏰ '+td.item.time+'</div>';
-
-    if(td.needsLocation){
-      html+='<div class="pmd-q-label">Where is this?</div>';
-      html+='<div class="pmd-options">';
-      ['At my factory','Their office','Neutral location','Phone/Online'].forEach(function(loc){
-        html+='<div class="pmd-opt" onclick="selectPMDOption(this,'+idx+',\'location\',\''+loc+'\')" data-val="'+loc+'">'+loc+'</div>';
-      });
-      html+='</div>';
-    }
-
-    if(td.needsDuration){
-      html+='<div class="pmd-q-label">How long?</div>';
-      html+='<div class="pmd-options">';
-      ['15 min','30 min','1 hour','2 hours','3 hours'].forEach(function(dur){
-        html+='<div class="pmd-opt" onclick="selectPMDOption(this,'+idx+',\'duration\',\''+dur+'\')" data-val="'+dur+'">'+dur+'</div>';
-      });
-      html+='</div>';
-    }
-
-    if(td.needsLocation){
-      html+='<div class="pmd-q-label">Travel time from your base?</div>';
-      html+='<div class="pmd-options">';
-      ['No travel','15 min','30 min','45 min','1 hour+'].forEach(function(tt){
-        html+='<div class="pmd-opt" onclick="selectPMDOption(this,'+idx+',\'travelTime\',\''+tt+'\')" data-val="'+tt+'">'+tt+'</div>';
-      });
-      html+='</div>';
-    }
-
-    html+='</div>';
-  });
-
-  ql.innerHTML=html;
-
-  // Show overlay
-  document.getElementById('pmd-overlay').classList.add('active');
-  showPMDStep('questions');
-}
-
-function selectPMDOption(el,idx,field,val){
-  // Deselect siblings in same group
-  var card=el.parentElement;
-  card.querySelectorAll('.pmd-opt').forEach(function(o){o.classList.remove('selected');});
-  el.classList.add('selected');
-  pmdTaskData[idx][field]=val;
-}
-
-function showPMDStep(step){
-  document.querySelectorAll('.pmd-step').forEach(function(s){s.classList.remove('active');});
-  document.getElementById('pmd-step-'+step).classList.add('active');
-}
-
-function closePMD(){
-  document.getElementById('pmd-overlay').classList.remove('active');
-  showPMDStep('questions');
-}
-
-async function submitPlanMyDay(){
-  showPMDStep('generating');
-
-  // Build prompt for Claude
-  var taskList=pmdTaskData.map(function(td){
-    var t=td.item;
-    var info='- '+t.title;
-    if(t.time)info+=' at '+t.time;
-    if(t.priority)info+=' ['+t.priority+' priority]';
-    if(td.location)info+=' | Location: '+td.location;
-    if(td.duration)info+=' | Duration: '+td.duration;
-    if(td.travelTime&&td.travelTime!=='No travel')info+=' | Travel time: '+td.travelTime+' each way';
-    return info;
-  }).join('\n');
-
-  var workBlocks=state.workBlocks||[];
-  var rw=workBlocks.find(function(b){return b.id==='regular';});
-  var pw=workBlocks.find(function(b){return b.id==='project';});
-
-  var workHours=(rw?rw.timeFrom+' to '+rw.timeTo:'9:30 to 17:00');
-  var projHours=pw?' then project work '+pw.timeFrom+' to '+pw.timeTo:'';
-  var prompt=[
-    'You are a smart personal secretary. Plan the day based on these tasks:',
-    '',
-    taskList,
-    '',
-    'Work hours: '+workHours+projHours,
-    '',
-    'Rules:',
-    '1. Schedule fixed-time tasks at their specified time',
-    '2. Add travel time before and after location-based tasks',
-    '3. Flag any conflicts clearly',
-    '4. Fill flexible tasks in available gaps',
-    '5. Keep it realistic',
-    '',
-    'Respond ONLY in JSON format, no other text:',
-    '{"schedule":[{"time":"HH:MM","task":"task name","duration":"X min","type":"task|travel|break|conflict","note":"optional","color":"#hex"}],"summary":"one line summary","conflicts":["conflict description"]}'
-  ].join("\n");
-
-  try{
-    var response=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    var data=await response.json();
-    var text=data.content.map(function(i){return i.text||'';}).join('');
-    var clean=text.replace(/```json|```/g,'').trim();
-    var result=JSON.parse(clean);
-    renderPMDSchedule(result);
-  }catch(e){
-    // Fallback if API fails
-    renderPMDScheduleFallback();
-  }
-}
-
-function renderPMDSchedule(result){
-  var html='';
-  if(result.summary){
-    html+='<div style="background:#0a1520;border-radius:10px;padding:12px;margin-bottom:12px;border-left:4px solid #4a9fd4">';
-    html+='<div style="font-size:10px;color:#4a9fd4;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Your Day</div>';
-    html+='<div style="font-size:13px;color:#fff">'+result.summary+'</div>';
-    html+='</div>';
-  }
-  if(result.conflicts&&result.conflicts.length){
-    result.conflicts.forEach(function(c){
-      html+='<div style="background:#1a0a0a;border-radius:10px;padding:10px;margin-bottom:8px;border-left:4px solid #e05555">';
-      html+='<div style="font-size:10px;color:#e05555;font-weight:bold">⚠ Conflict</div>';
-      html+='<div style="font-size:12px;color:#aaa;margin-top:2px">'+c+'</div>';
-      html+='</div>';
-    });
-  }
-  if(result.schedule){
-    result.schedule.forEach(function(s){
-      var isTravel=s.type==='travel';
-      var isConflict=s.type==='conflict';
-      var color=s.color||(isTravel?'#f0a500':isConflict?'#e05555':'#2a6496');
-      html+='<div class="pmd-schedule-item'+(isConflict?' pmd-conflict':isTravel?' pmd-travel':'')+'" style="border-left-color:'+color+'">';
-      html+='<div class="pmd-schedule-time">'+s.time+'</div>';
-      html+='<div class="pmd-schedule-body">';
-      html+='<div class="pmd-schedule-task">'+s.task+'</div>';
-      var meta=[];
-      if(s.duration)meta.push(s.duration);
-      if(s.note)meta.push(s.note);
-      if(meta.length)html+='<div class="pmd-schedule-meta">'+meta.join(' · ')+'</div>';
-      html+='</div></div>';
-    });
-  }
-  document.getElementById('pmd-schedule-output').innerHTML=html;
-  showPMDStep('schedule');
-}
-
-function renderPMDScheduleFallback(){
-  var html='<div style="text-align:center;padding:20px;color:#e05555">Could not connect to AI. Check your internet and try again.</div>';
-  document.getElementById('pmd-schedule-output').innerHTML=html;
-  showPMDStep('schedule');
-}
-
-function acceptSchedule(){
-  closePMD();
-  // Switch to schedule/tomorrow tab
-  showTab('tomorrow',document.querySelector('.tab'));
-}
-
-// ── FIRST LAUNCH ──
-var selectedLaunchMode='power';
-
-function selectLaunchMode(mode){
-  selectedLaunchMode=mode;
-  var simCard=document.getElementById('lm-simple');
-  var powCard=document.getElementById('lm-power');
-  if(simCard){
-    simCard.className='launch-mode-card'+(mode==='simple'?' selected-simple':'');
-  }
-  if(powCard){
-    powCard.className='launch-mode-card'+(mode==='power'?' selected':'');
-  }
-}
-
-function completeLaunch(){
-  var name=document.getElementById('launch-name').value.trim();
-  if(!name){document.getElementById('launch-name').focus();document.getElementById('launch-name').style.borderColor='#e05555';return;}
-  state.username=name;
-  state.appMode=selectedLaunchMode;
-  state.firstLaunch=false;
-  save();
-  document.getElementById('launch-screen').classList.remove('active');
-  updateHeaderName();
-  applyAppMode();
-  applyTabNames();
-  rebuildTabs();
-}
-
-function checkFirstLaunch(){
-  if(state.firstLaunch===true||state.firstLaunch===undefined){
-    // Only show if no username set
-    if(!state.username){
-      document.getElementById('launch-screen').classList.add('active');
-    } else {
-      state.firstLaunch=false;
-      save();
-    }
-  }
-}
-
-// ── TAB NAMES ──
-function saveTabNames(){
-  if(!state.tabNames)state.tabNames={};
-  var rw=document.getElementById('tabname-regwork');
-  var pw=document.getElementById('tabname-projwork');
-  if(rw)state.tabNames.regwork=rw.value.trim()||'Regular';
-  if(pw)state.tabNames.projwork=pw.value.trim()||'Pipeline';
-  save();
-  applyTabNames();
-  var ok=document.getElementById('tabnames-saved');
-  if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},2000);}
-}
-
-function applyTabNames(){
-  syncAllTabs();
-}
-
-function renderTabNames(){
-  var tn=state.tabNames||{};
-  var rw=document.getElementById('tabname-regwork');
-  var pw=document.getElementById('tabname-projwork');
-  if(rw)rw.value=tn.regwork||'Regular';
-  if(pw)pw.value=tn.projwork||'Pipeline';
-}
-
-
-// ── UNIFIED TAB SYNC ──
-function syncAllTabs(){
-  var mode=state.appMode||'power';
-  var isSimple=mode==='simple';
-  var tv=state.tabVisibility||{};
-  var tn=state.tabNames||{};
-
-  var powerOnly=['projwork','projects','progress','schedule','overdue','history','capture'];
-  var optional=['schedule','overdue','history','capture'];
-
-  var tabs=document.querySelectorAll('[data-tab]');
-  tabs.forEach(function(tb){
-    var tabId=tb.getAttribute('data-tab');
-    if(!tabId)return;
-
-    // Rename if needed — update text only
-    if(tabId==='regwork'||tabId==='projwork'){
-      var badge=tb.querySelector('.bx');
-      var newName=tabId==='regwork'?(tn.regwork||'Regular'):(tn.projwork||'Pipeline');
-      // Clear text nodes only
-      Array.from(tb.childNodes).forEach(function(n){if(n.nodeType===3)n.parentNode.removeChild(n);});
-      var txt=document.createTextNode(newName+' ');
-      tb.insertBefore(txt,tb.firstChild);
-    }
-
-    // Visibility
-    var show=true;
-    if(isSimple&&powerOnly.indexOf(tabId)>-1) show=false;
-    if(optional.indexOf(tabId)>-1&&tv[tabId]===false) show=false;
-    tb.style.display=show?'':'none';
-  });
+  if(Notification.permission==='granted')new Notification(title,{body:body});
 }
 
 // ── APP MODE ──
 function setAppMode(mode){
-  state.appMode=mode;
-  save();
-  applyAppMode();
-  renderSettingsPanel();
+  state.appMode=mode;save();applyAppMode();renderSettingsPanel();
 }
-
 function applyAppMode(){
-  var mode=state.appMode||'power';
-  var isSimple=mode==='simple';
-
-  // Tab visibility handled by syncAllTabs
-  syncAllTabs();
-
-  // Hide project work section in Today tab
-  var pwSec=document.getElementById('pw-block-sec');
-  if(pwSec)pwSec.style.display=isSimple?'none':'';
-
-  // Focus mode stays in simple mode too
-  var focusRow=document.querySelector('.focus-toggle-row');
-  if(focusRow)focusRow.style.display='';
-
-  // Hide focus section if visible
-  var focusSec=document.getElementById('focus-section');
-  if(focusSec&&isSimple){focusSec.classList.remove('active');var sw=document.getElementById('focus-sw');if(sw)sw.classList.remove('on');}
-
-  // Hide momentum section
-  var momSec=document.getElementById('momentum-sec');
-  if(momSec)momSec.style.display=isSimple?'none':'';
-
-  // In simple mode — also simplify Regular Work tab
-  // Hide pipeline stage boxes and filter in simple mode
-  var stageBoxes=document.querySelector('.sboxes');
-  var filterHint=document.querySelector('.filter-hint');
-  var allBtn=document.getElementById('rw-all-btn');
-
-  // Update mode cards
-  var simCard=document.getElementById('mode-simple');
-  var powCard=document.getElementById('mode-power');
-  if(simCard){
-    simCard.style.borderColor=isSimple?'#4caf50':'transparent';
-    simCard.querySelector('.mode-badge').textContent=isSimple?'✓ Active':'Simple';
-  }
-  if(powCard){
-    powCard.style.borderColor=!isSimple?'#4a9fd4':'transparent';
-    powCard.querySelector('.mode-badge').textContent=!isSimple?'✓ Active':'Power';
-  }
-
-  // Simple mode header indicator
-  var hdr=document.querySelector('.hdr h1');
-  if(hdr&&isSimple&&!state.username){
-    hdr.innerHTML='📋 Daily Task Manager <span style="font-size:10px;color:#444;font-weight:normal">v2.5.2</span>';
-  }
+  var isSimple=(state.appMode||'power')==='simple';
+  var powerOnly=['projwork','projects','progress','schedule','overdue','history','capture'];
+  document.querySelectorAll('.tab').forEach(function(tb){
+    var oc=tb.getAttribute('onclick')||'';
+    var isPower=powerOnly.some(function(id){return oc.indexOf("'"+id+"'")>-1;});
+    if(isPower)tb.style.display=isSimple?'none':'';
+  });
+  var ps=document.getElementById('pw-sec');if(ps)ps.style.display=isSimple?'none':'';
+  var ms=document.getElementById('mom-sec');if(ms)ms.style.display=isSimple?'none':'';
+  var fr=document.querySelector('.focus-toggle-row');if(fr)fr.style.display='';
+  // Mode cards
+  var sc=document.getElementById('mode-simple');var pc=document.getElementById('mode-power');
+  if(sc){sc.style.borderColor=isSimple?'#4caf50':'transparent';sc.querySelector('.mode-badge').textContent=isSimple?'✓ Active':'Simple';}
+  if(pc){pc.style.borderColor=!isSimple?'#4a9fd4':'transparent';pc.querySelector('.mode-badge').textContent=!isSimple?'✓ Active':'Power';}
+  if(!isSimple)applyTabVisibility();
 }
 
 // ── FOCUS MODE ──
-const PRIVAL2={high:0,medium:1,low:2};
-let focusQueue=[];
-let focusIdx=0;
-
+var focusList=[];var focusIdx=0;
+var PRIVAL3={high:0,medium:1,low:2};
 function toggleFocusMode(){
   var sw=document.getElementById('focus-sw');
   var sec=document.getElementById('focus-section');
   var isOn=sw.classList.contains('on');
   if(isOn){
-    sw.classList.remove('on');
-    sec.classList.remove('active');
-    // Show Today content
-    document.getElementById('rw-block-sec').style.display='';
-    document.getElementById('pw-block-sec').style.display='';
+    sw.classList.remove('on');sec.classList.remove('active');
+    document.getElementById('rw-sec').style.display='';
+    document.getElementById('pw-sec').style.display='';
   } else {
-    sw.classList.add('on');
-    sec.classList.add('active');
-    // Hide Today input sections
-    document.getElementById('rw-block-sec').style.display='none';
-    document.getElementById('pw-block-sec').style.display='none';
-    enterFocusMode();
+    sw.classList.add('on');sec.classList.add('active');
+    document.getElementById('rw-sec').style.display='none';
+    document.getElementById('pw-sec').style.display='none';
+    loadFocusQueue();
   }
 }
-
-function enterFocusMode(){
-  var all=state.items.filter(function(x){return x.stage<3;});
-  all.sort(function(a,b){
-    var pa=PRIVAL2[a.priority||'medium'];
-    var pb=PRIVAL2[b.priority||'medium'];
-    if(pa!==pb)return pa-pb;
-    return a.stage-b.stage;
-  });
-  focusQueue=all;
-  focusIdx=0;
-  renderFocusCard();
+function loadFocusQueue(){
+  focusList=state.items.filter(function(x){return x.stage<3;});
+  focusList.sort(function(a,b){return (PRIVAL3[a.priority||'medium']||1)-(PRIVAL3[b.priority||'medium']||1);});
+  focusIdx=0;renderFocusCard();
 }
-
 function renderFocusCard(){
-  if(focusIdx>=focusQueue.length){
-    document.getElementById('focus-content').innerHTML='<div class="focus-empty">🎉 All tasks reviewed!<br><span style="font-size:12px;color:#555;display:block;margin-top:8px">Great work.</span></div>';
-    document.getElementById('focus-counter').textContent='Done';
-    document.querySelector('.focus-btn.focus-next').style.display='none';
-    document.querySelector('.focus-btn.focus-done-btn').style.display='none';
+  var counter=document.getElementById('focus-counter');
+  var fcontent=document.getElementById('focus-content');
+  if(!focusList.length||focusIdx>=focusList.length){
+    if(counter)counter.textContent='';
+    if(fcontent)fcontent.innerHTML='<div class="focus-empty">🎉 All tasks done!</div>';
     return;
   }
-  var item=focusQueue[focusIdx];
+  var item=focusList[focusIdx];
   var pri=item.priority||'medium';
-  var priLabel={high:'▲ High',medium:'● Medium',low:'▽ Low'};
   var priColor={high:'#c97b6a',medium:'#7daa5a',low:'#5a8ab0'};
-  var remaining=focusQueue.length-focusIdx;
-  document.getElementById('focus-counter').textContent=remaining+' task'+(remaining>1?'s':'')+' remaining';
-  var projName=item.projName||(item.type==='regular'?'Regular Work':'Project');
-  document.getElementById('focus-content').innerHTML=
+  var priLabel={high:'▲ High',medium:'● Medium',low:'▽ Low'};
+  var remaining=focusList.length-focusIdx;
+  if(counter)counter.textContent=remaining+' task'+(remaining>1?'s':'')+' remaining';
+  if(fcontent)fcontent.innerHTML=
     '<div class="focus-card" style="border-left-color:'+priColor[pri]+'">'
     +'<div class="focus-title">'+item.title+'</div>'
-    +'<div class="focus-meta">'
+    +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">'
     +'<span class="pri-tag '+(pri==='high'?'pri-high':pri==='low'?'pri-low':'pri-medium')+'">'+priLabel[pri]+'</span>'
-    +'<span style="font-size:10px;color:#555">'+projName+'</span>'
     +(item.time?'<span class="wtime-badge">⏰ '+item.time+'</span>':'')
     +'</div>'
     +'<div class="focus-pipe">'
-    +'<div class="ps s0 '+(item.stage===0?'as':'')+'" onclick="focusSetStage(0)">Registered</div>'
-    +'<div class="ps s1 '+(item.stage===1?'as':'')+'" onclick="focusSetStage(1)">Follow Up</div>'
-    +'<div class="ps s2 '+(item.stage===2?'as':'')+'" onclick="focusSetStage(2)">Execute</div>'
-    +'<div class="ps s3 '+(item.stage===3?'as':'')+'" onclick="focusSetStage(3)">Done ✓</div>'
+    +'<div class="fps'+(item.stage===0?' fas':'')+'" onclick="fSetStage(0)">Registered</div>'
+    +'<div class="fps'+(item.stage===1?' fas':'')+'" onclick="fSetStage(1)">Follow Up</div>'
+    +'<div class="fps'+(item.stage===2?' fas':'')+'" onclick="fSetStage(2)">Execute</div>'
+    +'<div class="fps'+(item.stage===3?' fas':'')+'" onclick="fSetStage(3)">Done ✓</div>'
     +'</div>'
-    +(item.notes&&item.notes.length?'<div style="margin-bottom:10px">'+item.notes.map(function(n){return'<div class="enote"><span>'+n.text+'</span><span class="etime">'+n.time+'</span></div>';}).join('')+'</div>':'')
-    +'<textarea class="focus-note-input" id="focus-note" placeholder="Add a note or update..."></textarea>'
+    +'<textarea class="focus-note-input" id="focus-note" placeholder="Add note..."></textarea>'
     +'</div>';
 }
-
-function focusSetStage(stage){
-  if(focusIdx>=focusQueue.length)return;
-  var item=focusQueue[focusIdx];
-  var realItem=state.items.find(function(x){return x.id==item.id;});
-  if(realItem){realItem.stage=stage;item.stage=stage;save();renderAll();updateBadges();}
+function fSetStage(stage){
+  if(focusIdx>=focusList.length)return;
+  var item=focusList[focusIdx];
+  var real=state.items.find(function(x){return x.id==item.id;});
+  if(real){real.stage=stage;item.stage=stage;save();renderAll();updateBadges();}
   renderFocusCard();
 }
-
 function focusMarkDone(){
-  if(focusIdx>=focusQueue.length)return;
-  var item=focusQueue[focusIdx];
-  var realItem=state.items.find(function(x){return x.id==item.id;});
-  // Save note if any
-  var noteEl=document.getElementById('focus-note');
-  if(noteEl&&noteEl.value.trim()&&realItem){
-    realItem.notes.push({text:noteEl.value.trim(),time:nowTime});
-  }
-  if(realItem){realItem.stage=3;logHistory('✓ Done: '+item.title,'Focus','tag-reg');save();renderAll();updateBadges();}
-  focusIdx++;
-  // Remove done items from queue
-  focusQueue=focusQueue.filter(function(x){return x.stage<3;});
-  focusIdx=0;
-  renderFocusCard();
+  if(focusIdx>=focusList.length)return;
+  var item=focusList[focusIdx];
+  var real=state.items.find(function(x){return x.id==item.id;});
+  var note=document.getElementById('focus-note');
+  if(note&&note.value.trim()&&real)real.notes.push({text:note.value.trim(),time:nowTime});
+  if(real){real.stage=3;save();renderAll();updateBadges();}
+  focusList=focusList.filter(function(x){return x.stage<3;});
+  focusIdx=0;renderFocusCard();
 }
-
 function focusNext(){
-  // Save note if any
-  var noteEl=document.getElementById('focus-note');
-  if(noteEl&&noteEl.value.trim()&&focusIdx<focusQueue.length){
-    var item=focusQueue[focusIdx];
-    var realItem=state.items.find(function(x){return x.id==item.id;});
-    if(realItem){realItem.notes.push({text:noteEl.value.trim(),time:nowTime});save();}
+  var note=document.getElementById('focus-note');
+  if(note&&note.value.trim()&&focusIdx<focusList.length){
+    var real=state.items.find(function(x){return x.id==focusList[focusIdx].id;});
+    if(real){real.notes.push({text:note.value.trim(),time:nowTime});save();}
   }
-  focusIdx++;
-  renderFocusCard();
+  focusIdx++;renderFocusCard();
 }
 
+// ── FIRST LAUNCH ──
+var selectedLaunchMode2='power';
+function selectLaunchMode(mode){
+  selectedLaunchMode2=mode;
+  var sc=document.getElementById('lm-simple');var pc=document.getElementById('lm-power');
+  if(sc)sc.className='launch-mode-card'+(mode==='simple'?' selected-simple':'');
+  if(pc)pc.className='launch-mode-card'+(mode==='power'?' selected':'');
+}
+function completeLaunch(){
+  var name=document.getElementById('launch-name');
+  if(!name||!name.value.trim()){if(name)name.style.borderColor='#e05555';return;}
+  state.username=name.value.trim();
+  state.appMode=selectedLaunchMode2;
+  state.firstLaunch=false;
+  save();
+  document.getElementById('launch-screen').classList.remove('active');
+  updateHeaderName();applyAppMode();
+}
+function checkFirstLaunch(){
+  if(!state.username){
+    state.firstLaunch=true;
+    document.getElementById('launch-screen').classList.add('active');
+  }
+}
+
+// ── PLAN MY DAY ──
+var pmdData=[];
+function startPlanMyDay(){
+  var tasks=state.items.filter(function(x){return x.stage<3&&x.date===todayStr;});
+  if(!tasks.length){alert('No tasks for today!');return;}
+  pmdData=tasks.map(function(item){
+    var isMeet=/meet|meeting/i.test(item.title);
+    var isVisit=/visit/i.test(item.title);
+    var isCall=/call|speak|talk/i.test(item.title);
+    return {item:item,isMeet:isMeet,isVisit:isVisit,isCall:isCall,location:isCall?'phone':null,duration:null,travelTime:null};
+  });
+  var tasksWithQ=pmdData.filter(function(t){return t.isMeet||t.isVisit||t.isCall;});
+  if(!tasksWithQ.length){submitPlanMyDay();return;}
+  var ql=document.getElementById('pmd-questions-list');
+  var html='<div style="font-size:11px;color:#4a9fd4;margin-bottom:12px">Quick questions:</div>';
+  pmdData.forEach(function(td,idx){
+    if(!td.isMeet&&!td.isVisit&&!td.isCall)return;
+    html+='<div class="pmd-q-card"><div class="pmd-q-task">'+td.item.title+'</div>';
+    if(td.item.time)html+='<div class="pmd-q-time">⏰ '+td.item.time+'</div>';
+    if(td.isMeet||td.isVisit){
+      html+='<div class="pmd-q-label">Where?</div><div class="pmd-options">';
+      ['At my factory','Their office','Neutral','Phone/Online'].forEach(function(loc){
+        html+='<div class="pmd-opt" onclick="pmdSel(this,'+idx+',\'location\',\''+loc+'\')">'+loc+'</div>';
+      });
+      html+='</div>';
+    }
+    html+='<div class="pmd-q-label">How long?</div><div class="pmd-options">';
+    ['15 min','30 min','1 hour','2 hours'].forEach(function(dur){
+      html+='<div class="pmd-opt" onclick="pmdSel(this,'+idx+',\'duration\',\''+dur+'\')">'+dur+'</div>';
+    });
+    html+='</div>';
+    if(td.isMeet||td.isVisit){
+      html+='<div class="pmd-q-label">Travel time?</div><div class="pmd-options">';
+      ['No travel','15 min','30 min','45 min','1 hour+'].forEach(function(tt){
+        html+='<div class="pmd-opt" onclick="pmdSel(this,'+idx+',\'travelTime\',\''+tt+'\')">'+tt+'</div>';
+      });
+      html+='</div>';
+    }
+    html+='</div>';
+  });
+  if(ql)ql.innerHTML=html;
+  document.getElementById('pmd-overlay').classList.add('active');
+  pmdShowStep('questions');
+}
+function pmdSel(el,idx,field,val){
+  el.parentElement.querySelectorAll('.pmd-opt').forEach(function(o){o.classList.remove('selected');});
+  el.classList.add('selected');
+  pmdData[idx][field]=val;
+}
+function pmdShowStep(step){
+  document.querySelectorAll('.pmd-step').forEach(function(s){s.classList.remove('active');});
+  var el=document.getElementById('pmd-step-'+step);
+  if(el)el.classList.add('active');
+}
+function closePMD(){
+  document.getElementById('pmd-overlay').classList.remove('active');
+}
+async function submitPlanMyDay(){
+  pmdShowStep('generating');
+  var taskList=pmdData.map(function(td){
+    var info='- '+td.item.title;
+    if(td.item.time)info+=' at '+td.item.time;
+    if(td.item.priority)info+=' ['+td.item.priority+']';
+    if(td.location)info+=' | where: '+td.location;
+    if(td.duration)info+=' | duration: '+td.duration;
+    if(td.travelTime&&td.travelTime!=='No travel')info+=' | travel: '+td.travelTime+' each way';
+    return info;
+  }).join('\n');
+  var wb=state.workBlocks||[];
+  var rw=wb.find(function(b){return b.id==='rw';});
+  var pw=wb.find(function(b){return b.id==='pw';});
+  var hours='Work: '+(rw?rw.timeFrom+'-'+rw.timeTo:'9:30-17:00')+(pw?', Project: '+pw.timeFrom+'-'+pw.timeTo:'');
+  var promptLines=[
+    'You are a smart personal secretary. Plan this day:',
+    '',
+    taskList,
+    '',
+    hours,
+    '',
+    'Rules: 1.Fixed-time tasks at their time 2.Add travel before/after location tasks 3.Flag conflicts 4.Fill flexible tasks in gaps',
+    '',
+    'Respond ONLY in JSON: {"schedule":[{"time":"HH:MM","task":"name","duration":"X min","type":"task|travel|break|conflict","note":"optional","color":"#hex"}],"summary":"one line","conflicts":["description"]}'
+  ];
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:promptLines.join('\n')}]})
+    });
+    var data=await resp.json();
+    var text=data.content.map(function(i){return i.text||'';}).join('');
+    var clean=text.replace(/```json|```/g,'').trim();
+    var result=JSON.parse(clean);
+    renderPMDResult(result);
+  }catch(e){
+    document.getElementById('pmd-schedule-output').innerHTML='<div style="color:#e05555;text-align:center;padding:20px">Could not connect to AI. Check internet and try again.</div>';
+    pmdShowStep('schedule');
+  }
+}
+function renderPMDResult(result){
+  var html='';
+  if(result.summary){
+    html+='<div style="background:#0a1520;border-radius:10px;padding:12px;margin-bottom:12px;border-left:4px solid #4a9fd4">';
+    html+='<div style="font-size:10px;color:#4a9fd4;margin-bottom:4px;text-transform:uppercase">Your Day</div>';
+    html+='<div style="font-size:13px;color:#fff">'+result.summary+'</div></div>';
+  }
+  if(result.conflicts&&result.conflicts.length){
+    result.conflicts.forEach(function(c){
+      html+='<div style="background:#1a0a0a;border-radius:10px;padding:10px;margin-bottom:8px;border-left:4px solid #e05555">';
+      html+='<div style="font-size:10px;color:#e05555;font-weight:bold">⚠ Conflict</div>';
+      html+='<div style="font-size:12px;color:#aaa;margin-top:2px">'+c+'</div></div>';
+    });
+  }
+  if(result.schedule){
+    result.schedule.forEach(function(s){
+      var color=s.color||(s.type==='travel'?'#f0a500':s.type==='conflict'?'#e05555':'#2a6496');
+      html+='<div class="pmd-schedule-item" style="border-left-color:'+color+'">';
+      html+='<div class="pmd-schedule-time">'+s.time+'</div>';
+      html+='<div class="pmd-schedule-body"><div class="pmd-schedule-task">'+s.task+'</div>';
+      if(s.duration||s.note)html+='<div class="pmd-schedule-meta">'+(s.duration||'')+( s.note?' · '+s.note:'')+'</div>';
+      html+='</div></div>';
+    });
+  }
+  document.getElementById('pmd-schedule-output').innerHTML=html;
+  pmdShowStep('schedule');
+}
+
+// ── POPULATE PROJECT DROPDOWN ──
+function populateProjDropdown(){
+  var sel=document.getElementById('pw-proj');
+  if(!sel)return;
+  var projects=(state.projects||[]).filter(function(p){return p.type==='project';});
+  var cur=sel.value;
+  sel.innerHTML='<option value="reg">— Select Project —</option>';
+  projects.forEach(function(p){
+    var opt=document.createElement('option');
+    opt.value=p.id;opt.textContent=p.name;
+    if(p.id===cur)opt.selected=true;
+    sel.appendChild(opt);
+  });
+}
 
 
 // ── BOOT ──
-// Tab click via event delegation - more reliable than inline onclick
-document.querySelector('.tabs').addEventListener('click', function(e){
-  var tab = e.target.closest('[data-tab]');
-  if(!tab) return;
-  showTab(tab.getAttribute('data-tab'), tab);
-});
 load();
 if(Notification.permission==='granted')scheduleAllNotifications();
+checkFirstLaunch();
 if(state.theme)setTheme(state.theme);
 </script>
 
@@ -2147,135 +1771,96 @@ if(state.theme)setTheme(state.theme);
 
   <div class="sec">
     <div class="st">App Mode</div>
-    <div style="font-size:11px;color:#555;margin-bottom:12px">Choose how you want to use the app. You can switch anytime.</div>
-
-    <div class="mode-card mode-card-simple" id="mode-simple" onclick="setAppMode('simple')">
-      <div class="mode-badge mode-badge-simple">✓ Simple</div>
+    <div style="font-size:11px;color:#555;margin-bottom:12px">Switch anytime — your data stays intact.</div>
+    <div class="mode-card" id="mode-simple" onclick="setAppMode('simple')">
+      <div class="mode-badge" style="background:#1a3a1a;color:#4caf50">Simple</div>
       <div class="mode-card-title">📋 Daily Task Manager</div>
-      <div class="mode-card-desc">Clean, minimal. Add tasks, set priority, carry forward automatically. Perfect for students and office workers.</div>
+      <div class="mode-card-desc">Clean and minimal. Perfect for students and office workers.</div>
     </div>
-
-    <div class="mode-card mode-card-power" id="mode-power" onclick="setAppMode('power')">
-      <div class="mode-badge mode-badge-power">⚡ Power</div>
+    <div class="mode-card selected" id="mode-power" onclick="setAppMode('power')">
+      <div class="mode-badge" style="background:#1a1a3a;color:#4a9fd4">✓ Active</div>
       <div class="mode-card-title">⚙ Operations Center</div>
-      <div class="mode-card-desc">Full pipeline, project tracking, Focus Mode, scheduling and more. Built for business owners and managers.</div>
+      <div class="mode-card-desc">Full pipeline, projects, Focus Mode and scheduling. For business owners.</div>
     </div>
   </div>
 
   <div class="sec">
     <div class="st">Your Profile</div>
-    <div style="margin-bottom:6px;font-size:11px;color:#666">Your name (shown in app header)</div>
+    <div style="font-size:11px;color:#666;margin-bottom:6px">Your name (shown in header)</div>
     <div style="display:flex;gap:6px">
       <input class="fi fw" type="text" id="set-username" placeholder="Enter your name..." />
       <button class="btn btn-bl btn-sm" onclick="saveUsername()">Save</button>
     </div>
-    <div id="username-saved" style="font-size:10px;color:#4caf50;margin-top:5px;display:none">✓ Name saved!</div>
+    <div id="username-saved" style="font-size:10px;color:#4caf50;margin-top:5px;display:none">✓ Saved!</div>
   </div>
 
   <div class="sec">
     <div class="st">Appearance</div>
     <div style="display:flex;gap:8px">
-      <div id="set-dark" onclick="setTheme('dark')" style="flex:1;text-align:center;padding:10px;border-radius:8px;cursor:pointer;border:1px solid #1e2a3a;background:#111827;color:#aaa;font-size:12px">🌙 Dark</div>
+      <div id="set-dark" onclick="setTheme('dark')" style="flex:1;text-align:center;padding:10px;border-radius:8px;cursor:pointer;border:1px solid #1e2a3a;background:#2a6496;color:#fff;font-size:12px">🌙 Dark</div>
       <div id="set-bright" onclick="setTheme('bright')" style="flex:1;text-align:center;padding:10px;border-radius:8px;cursor:pointer;border:1px solid #1e2a3a;background:#111827;color:#aaa;font-size:12px">☀ Bright</div>
     </div>
   </div>
 
   <div class="sec">
     <div class="st">Tab Visibility</div>
-    <div style="font-size:11px;color:#555;margin-bottom:10px">Toggle which optional tabs appear in your app.</div>
-
-    <div class="tog-row">
-      <span class="tog-label">Schedule</span>
-      <div class="sw on" id="sw-schedule" onclick="toggleTab(this,'schedule')"><div class="sw-dot"></div></div>
-    </div>
-    <div class="tog-row">
-      <span class="tog-label">Overdue</span>
-      <div class="sw on" id="sw-overdue" onclick="toggleTab(this,'overdue')"><div class="sw-dot"></div></div>
-    </div>
-    <div class="tog-row">
-      <span class="tog-label">History</span>
-      <div class="sw on" id="sw-history" onclick="toggleTab(this,'history')"><div class="sw-dot"></div></div>
-    </div>
-    <div class="tog-row">
-      <span class="tog-label">Capture</span>
-      <div class="sw on" id="sw-capture" onclick="toggleTab(this,'capture')"><div class="sw-dot"></div></div>
-    </div>
-
+    <div style="font-size:11px;color:#555;margin-bottom:10px">Show or hide optional tabs.</div>
+    <div id="tab-vis-list"></div>
   </div>
 
   <div class="sec">
     <div class="st">Work Blocks</div>
-    <div style="font-size:11px;color:#555;margin-bottom:12px">Rename your work blocks and set their times.</div>
-
-    <div id="wb-regular" style="margin-bottom:12px;padding:10px;background:#0a0f18;border-radius:8px;border:1px solid #1e2a3a">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <div class="sw on" id="sw-wb-regular" onclick="toggleWB(this,'regular')"><div class="sw-dot"></div></div>
-        <input id="wb-label-regular" class="fi fw" value="Regular Work" placeholder="Block name..." style="font-size:12px" />
+    <div style="font-size:11px;color:#555;margin-bottom:12px">Rename and set times for your work blocks.</div>
+    <div class="wb-block">
+      <div class="wb-top">
+        <div class="sw on" id="swb-rw" onclick="toggleWorkBlock(this,'rw')"><div class="sw-dot"></div></div>
+        <input class="wb-name" id="wbl-rw" value="Regular Work" placeholder="Block name..." />
       </div>
-      <div style="display:flex;gap:6px;align-items:center">
+      <div class="wb-times">
         <span style="font-size:11px;color:#555">From</span>
-        <input type="time" id="wb-from-regular" class="fi" value="09:30" style="flex:1" />
+        <input type="time" class="fi" id="wbf-rw" value="09:30" style="flex:1" />
         <span style="font-size:11px;color:#555">To</span>
-        <input type="time" id="wb-to-regular" class="fi" value="17:00" style="flex:1" />
+        <input type="time" class="fi" id="wbt-rw" value="17:00" style="flex:1" />
       </div>
     </div>
-
-    <div id="wb-project" style="margin-bottom:12px;padding:10px;background:#0a0f18;border-radius:8px;border:1px solid #1e2a3a">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <div class="sw on" id="sw-wb-project" onclick="toggleWB(this,'project')"><div class="sw-dot"></div></div>
-        <input id="wb-label-project" class="fi fw" value="Project Work" placeholder="Block name..." style="font-size:12px" />
+    <div class="wb-block">
+      <div class="wb-top">
+        <div class="sw on" id="swb-pw" onclick="toggleWorkBlock(this,'pw')"><div class="sw-dot"></div></div>
+        <input class="wb-name" id="wbl-pw" value="Project Work" placeholder="Block name..." />
       </div>
-      <div style="display:flex;gap:6px;align-items:center">
+      <div class="wb-times">
         <span style="font-size:11px;color:#555">From</span>
-        <input type="time" id="wb-from-project" class="fi" value="17:00" style="flex:1" />
+        <input type="time" class="fi" id="wbf-pw" value="17:00" style="flex:1" />
         <span style="font-size:11px;color:#555">To</span>
-        <input type="time" id="wb-to-project" class="fi" value="19:00" style="flex:1" />
+        <input type="time" class="fi" id="wbt-pw" value="19:00" style="flex:1" />
       </div>
     </div>
-
-    <button onclick="saveWorkBlocks()" style="width:100%;padding:10px;background:#27ae60;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:bold;cursor:pointer">✓ Save Work Blocks</button>
+    <button onclick="saveWorkBlocks()" class="btn btn-gr btn-full">✓ Save Work Blocks</button>
     <div id="wb-saved" style="font-size:10px;color:#4caf50;text-align:center;margin-top:5px;display:none">✓ Saved!</div>
   </div>
 
   <div class="sec">
-    <div class="st">Tab Names</div>
-    <div style="font-size:11px;color:#555;margin-bottom:12px">Rename tabs to match your workflow.</div>
-    <div class="tog-row">
-      <div><div class="tog-label">Regular Work tab</div><div style="font-size:10px;color:#555">Currently shown in tab bar</div></div>
-      <input id="tabname-regwork" class="fi" value="Regular" style="width:110px;font-size:11px" placeholder="Tab name..." />
-    </div>
-    <div class="tog-row">
-      <div><div class="tog-label">Pipeline tab</div><div style="font-size:10px;color:#555">Project task pipeline</div></div>
-      <input id="tabname-projwork" class="fi" value="Pipeline" style="width:110px;font-size:11px" placeholder="Tab name..." />
-    </div>
-    <button onclick="saveTabNames()" style="width:100%;margin-top:10px;padding:9px;background:#2a6496;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:bold;cursor:pointer">✓ Save Tab Names</button>
-    <div id="tabnames-saved" style="font-size:10px;color:#4caf50;text-align:center;margin-top:5px;display:none">✓ Saved!</div>
-  </div>
-
-  <div class="sec">
     <div class="st">Notifications</div>
-    <div style="font-size:11px;color:#555;margin-bottom:12px">Get reminded about your tasks and meetings.</div>
-
+    <div style="font-size:11px;color:#555;margin-bottom:12px">Get reminded about tasks and meetings.</div>
     <div class="tog-row">
       <div><div class="tog-label">Task reminders</div><div style="font-size:10px;color:#555">Notify at task time</div></div>
-      <div class="sw on" id="sw-notif-task" onclick="toggleNotif(this,'task')"><div class="sw-dot"></div></div>
+      <div class="sw on" id="swn-task" onclick="toggleNotif(this,'task')"><div class="sw-dot"></div></div>
     </div>
     <div class="tog-row">
       <div><div class="tog-label">Meeting — 1 hour before</div><div style="font-size:10px;color:#555">Early warning</div></div>
-      <div class="sw on" id="sw-notif-meeting_early" onclick="toggleNotif(this,'meeting_early')"><div class="sw-dot"></div></div>
+      <div class="sw on" id="swn-meeting_early" onclick="toggleNotif(this,'meeting_early')"><div class="sw-dot"></div></div>
     </div>
     <div class="tog-row">
       <div><div class="tog-label">Meeting — at time</div><div style="font-size:10px;color:#555">Notify when meeting starts</div></div>
-      <div class="sw on" id="sw-notif-meeting_now" onclick="toggleNotif(this,'meeting_now')"><div class="sw-dot"></div></div>
+      <div class="sw on" id="swn-meeting_now" onclick="toggleNotif(this,'meeting_now')"><div class="sw-dot"></div></div>
     </div>
     <div class="tog-row">
-      <div><div class="tog-label">Morning briefing</div><div style="font-size:10px;color:#555">Daily summary at 9:00 AM</div></div>
-      <div class="sw" id="sw-notif-morning" onclick="toggleNotif(this,'morning')"><div class="sw-dot"></div></div>
+      <div><div class="tog-label">Morning briefing</div><div style="font-size:10px;color:#555">9:00 AM daily summary</div></div>
+      <div class="sw" id="swn-morning" onclick="toggleNotif(this,'morning')"><div class="sw-dot"></div></div>
     </div>
-
-    <div class="tog-row" style="margin-top:4px">
-      <div><div class="tog-label">Remind me before task</div><div style="font-size:10px;color:#555">Early reminder for any timed task</div></div>
-      <select id="reminder-mins" onchange="saveReminderMins(this.value)" style="background:#0a0f18;border:1px solid #1e2a3a;border-radius:6px;color:#aaa;font-size:11px;padding:4px 8px;cursor:pointer">
+    <div class="tog-row">
+      <div><div class="tog-label">Remind me before task</div><div style="font-size:10px;color:#555">Early reminder</div></div>
+      <select id="reminder-mins" onchange="saveReminderMins(this.value)" style="background:#0a0f18;border:1px solid #1e2a3a;border-radius:6px;color:#aaa;font-size:11px;padding:4px 8px">
         <option value="0">At time only</option>
         <option value="5">5 mins before</option>
         <option value="10">10 mins before</option>
@@ -2284,55 +1869,44 @@ if(state.theme)setTheme(state.theme);
         <option value="60">1 hour before</option>
       </select>
     </div>
-
-    <button id="notif-btn" onclick="requestNotifPermission()" style="width:100%;margin-top:12px;padding:10px;background:#2a6496;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:bold;cursor:pointer">🔔 Enable Notifications</button>
+    <button id="notif-perm-btn" onclick="requestNotifPermission()" class="btn btn-bl btn-full" style="margin-top:10px">🔔 Enable Notifications</button>
     <div id="notif-status" style="font-size:10px;text-align:center;margin-top:6px;color:#555"></div>
   </div>
 
   <div class="sec">
     <div class="st">Data</div>
-    <div style="font-size:11px;color:#555;margin-bottom:10px">All your data is stored only on this device. Nothing is sent to any server.</div>
+    <div style="font-size:11px;color:#555;margin-bottom:10px">All data stored only on this device. Nothing sent to any server.</div>
     <button onclick="resetApp()" style="width:100%;padding:10px;background:#1a0a0a;border:1px solid #5a2e2e;color:#c97b6a;border-radius:7px;font-size:12px;cursor:pointer">⚠ Reset All Data</button>
-    <div style="font-size:10px;color:#444;text-align:center;margin-top:5px">Clears all tasks, projects and history</div>
   </div>
 
   <div class="sec">
     <div class="st">About</div>
-    <div style="font-size:12px;color:#555;line-height:2">
-      My Operations Center <span style="color:#4a9fd4">v2.5.2</span><br>
-      <span style="font-size:10px">Built for makers, manufacturers & doers.<br>Your data never leaves your device.</span>
-    </div>
+    <div style="font-size:12px;color:#555;line-height:2">My Operations Center <span style="color:#4a9fd4">v3.0</span><br><span style="font-size:10px">Built for makers, manufacturers & doers.<br>Your data never leaves your device.</span></div>
   </div>
 
 </div>
 
 
-
-<!-- FIRST LAUNCH SCREEN -->
+<!-- LAUNCH SCREEN -->
 <div id="launch-screen">
   <div class="launch-logo">⚙</div>
   <div class="launch-title">Operations Center</div>
   <div class="launch-sub">Your daily work, organised.</div>
-
   <div class="launch-section">What's your name?</div>
   <input class="launch-name-input" id="launch-name" type="text" placeholder="Enter your name..." maxlength="30" />
-
   <div class="launch-section">How do you want to use this?</div>
-
   <div class="launch-mode-card" id="lm-simple" onclick="selectLaunchMode('simple')">
     <div class="launch-mode-badge" style="background:#1a3a1a;color:#4caf50">📋 Simple</div>
     <div class="launch-mode-title">Daily Task Manager</div>
     <div class="launch-mode-desc">Clean and minimal. Perfect for students and office workers.</div>
-    <div class="launch-mode-features">✓ Add tasks · ✓ Set priority · ✓ Carry forward · ✓ Focus Mode</div>
+    <div class="launch-mode-features">✓ Add tasks · ✓ Priority · ✓ Carry forward · ✓ Focus Mode</div>
   </div>
-
   <div class="launch-mode-card selected" id="lm-power" onclick="selectLaunchMode('power')">
     <div class="launch-mode-badge" style="background:#1a1a3a;color:#4a9fd4">⚡ Power</div>
     <div class="launch-mode-title">Operations Center</div>
-    <div class="launch-mode-desc">Full pipeline and project tracking. Built for business owners and managers.</div>
-    <div class="launch-mode-features">✓ Everything in Simple · ✓ Project pipeline · ✓ Progress tracking · ✓ Scheduling</div>
+    <div class="launch-mode-desc">Full pipeline and project tracking. For business owners and managers.</div>
+    <div class="launch-mode-features">✓ Everything in Simple · ✓ Pipeline · ✓ Projects · ✓ AI Scheduling</div>
   </div>
-
   <button class="launch-start-btn" onclick="completeLaunch()">Let's Go →</button>
   <div style="text-align:center;margin-top:12px;font-size:10px;color:#333">You can change this anytime in Settings</div>
 </div>
@@ -2342,17 +1916,13 @@ if(state.theme)setTheme(state.theme);
 <div id="pmd-overlay">
   <div class="pmd-header">
     <div class="pmd-title">🗓 Plan My Day</div>
-    <div class="pmd-sub">Answer a few quick questions — AI will arrange your day</div>
+    <div class="pmd-sub">Answer a few questions — AI will arrange your day</div>
   </div>
-
-  <!-- STEP 1: Questions -->
   <div class="pmd-step active" id="pmd-step-questions">
     <div id="pmd-questions-list"></div>
     <button class="pmd-next-btn" onclick="submitPlanMyDay()">✓ Generate My Schedule →</button>
     <button class="pmd-close-btn" onclick="closePMD()">✕ Cancel</button>
   </div>
-
-  <!-- STEP 2: Generating -->
   <div class="pmd-step" id="pmd-step-generating">
     <div class="pmd-generating">
       <div class="pmd-gen-icon">⚙</div>
@@ -2360,11 +1930,9 @@ if(state.theme)setTheme(state.theme);
       <div class="pmd-gen-sub">Analysing tasks · Checking conflicts · Optimising schedule</div>
     </div>
   </div>
-
-  <!-- STEP 3: Schedule -->
   <div class="pmd-step" id="pmd-step-schedule">
     <div id="pmd-schedule-output"></div>
-    <button class="pmd-next-btn" onclick="acceptSchedule()" style="background:#27ae60">✓ Accept This Schedule</button>
+    <button class="pmd-next-btn" onclick="closePMD()" style="background:#27ae60">✓ Done</button>
     <button class="pmd-close-btn" onclick="closePMD()">✕ Close</button>
   </div>
 </div>
