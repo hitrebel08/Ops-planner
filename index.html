@@ -1715,47 +1715,134 @@ function pmdShowStep(step){
 function closePMD(){
   document.getElementById('pmd-overlay').classList.remove('active');
 }
-async function submitPlanMyDay(){
+function submitPlanMyDay(){
   pmdShowStep('generating');
-  var taskList=pmdData.map(function(td){
-    var info='- '+td.item.title;
-    if(td.item.time)info+=' at '+td.item.time;
-    if(td.item.priority)info+=' ['+td.item.priority+']';
-    if(td.location)info+=' | where: '+td.location;
-    if(td.duration)info+=' | duration: '+td.duration;
-    if(td.travelTime&&td.travelTime!=='No travel')info+=' | travel: '+td.travelTime+' each way';
-    return info;
-  }).join('\n');
+  // Small delay so user sees the generating screen
+  setTimeout(function(){
+    var result=localScheduler();
+    renderPMDResult(result);
+  }, 800);
+}
+
+// ── LOCAL SCHEDULER ──
+function parseDurMins(str){
+  if(!str)return 30;
+  if(str.indexOf('hour')>-1){var n=parseInt(str);return(isNaN(n)?1:n)*60;}
+  var n=parseInt(str);return isNaN(n)?30:n;
+}
+function parseTravelMins(str){
+  if(!str||str==='No travel')return 0;
+  if(str.indexOf('hour')>-1)return 60;
+  var n=parseInt(str);return isNaN(n)?0:n;
+}
+function toMins(timeStr){
+  if(!timeStr)return null;
+  // handle am/pm
+  var t=timeStr.toLowerCase().replace(/\s/g,'');
+  var pm=t.indexOf('pm')>-1;var am=t.indexOf('am')>-1;
+  t=t.replace('pm','').replace('am','');
+  var parts=t.split(':');
+  var h=parseInt(parts[0]);var m=parseInt(parts[1]||0);
+  if(pm&&h<12)h+=12;
+  if(am&&h===12)h=0;
+  return h*60+m;
+}
+function fromMins(mins){
+  var h=Math.floor(mins/60);var m=mins%60;
+  return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+}
+function localScheduler(){
   var wb=state.workBlocks||[];
   var rw=wb.find(function(b){return b.id==='rw';});
   var pw=wb.find(function(b){return b.id==='pw';});
-  var hours='Work: '+(rw?rw.timeFrom+'-'+rw.timeTo:'9:30-17:00')+(pw?', Project: '+pw.timeFrom+'-'+pw.timeTo:'');
-  var promptLines=[
-    'You are a smart personal secretary. Plan this day:',
-    '',
-    taskList,
-    '',
-    hours,
-    '',
-    'Rules: 1.Fixed-time tasks at their time 2.Add travel before/after location tasks 3.Flag conflicts 4.Fill flexible tasks in gaps',
-    '',
-    'Respond ONLY in JSON: {"schedule":[{"time":"HH:MM","task":"name","duration":"X min","type":"task|travel|break|conflict","note":"optional","color":"#hex"}],"summary":"one line","conflicts":["description"]}'
-  ];
-  try{
-    var resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:promptLines.join('\n')}]})
-    });
-    var data=await resp.json();
-    var text=data.content.map(function(i){return i.text||'';}).join('');
-    var clean=text.replace(/```json|```/g,'').trim();
-    var result=JSON.parse(clean);
-    renderPMDResult(result);
-  }catch(e){
-    document.getElementById('pmd-schedule-output').innerHTML='<div style="color:#e05555;text-align:center;padding:20px">Could not connect to AI. Check internet and try again.</div>';
-    pmdShowStep('schedule');
-  }
+  var dayStart=toMins(rw?rw.timeFrom:'09:30')||570;
+  var dayEnd=toMins(rw?rw.timeTo:'17:00')||1020;
+  var projStart=toMins(pw?pw.timeFrom:'17:00')||1020;
+  var projEnd=toMins(pw?pw.timeTo:'19:00')||1140;
+
+  // Separate fixed-time and flexible tasks
+  var fixed=[];var flexible=[];
+  pmdData.forEach(function(td){
+    var t=td.item;
+    var fixedMins=toMins(t.time);
+    var dur=parseDurMins(td.duration);
+    var travel=parseTravelMins(td.travelTime);
+    var loc=td.location||'';
+    var isTravel=loc&&loc!=='At my factory'&&loc!=='Phone/Online'&&loc!=='phone';
+    if(fixedMins!==null){
+      fixed.push({task:t.title,startMins:fixedMins,dur:dur,travel:isTravel?travel:0,loc:loc,priority:t.priority||'medium',type:'task'});
+    } else {
+      flexible.push({task:t.title,dur:dur,travel:isTravel?travel:0,loc:loc,priority:t.priority||'medium',type:'task'});
+    }
+  });
+
+  // Sort fixed by time
+  fixed.sort(function(a,b){return a.startMins-b.startMins;});
+
+  // Build schedule
+  var schedule=[];
+  var conflicts=[];
+  var cursor=dayStart;
+
+  // Add fixed tasks, insert travel gaps, detect conflicts
+  fixed.forEach(function(task,i){
+    var travelNeeded=task.travel;
+    var travelStart=task.startMins-travelNeeded;
+
+    // Check conflict with previous
+    if(travelStart<cursor&&schedule.length>0){
+      conflicts.push('⚠ '+task.task+' at '+fromMins(task.startMins)+' — not enough time after previous task (need '+travelNeeded+' min travel)');
+    }
+
+    // Fill flexible tasks in gap
+    if(travelStart>cursor){
+      var gap=travelStart-cursor;
+      var flexIdx=0;
+      while(flexIdx<flexible.length&&gap>=flexible[flexIdx].dur){
+        var ft=flexible[flexIdx];
+        schedule.push({time:fromMins(cursor),task:ft.task,duration:ft.dur+' min',type:'task',color:'#2a6496',note:ft.loc||''});
+        cursor+=ft.dur;
+        gap-=ft.dur;
+        flexible.splice(flexIdx,1);
+      }
+    }
+
+    // Add travel
+    if(travelNeeded>0&&travelStart>=cursor){
+      schedule.push({time:fromMins(travelStart),task:'🚗 Travel to '+task.task,duration:travelNeeded+' min',type:'travel',color:'#f0a500',note:'Allow '+travelNeeded+' min'});
+    }
+
+    // Add task
+    var color=task.priority==='high'?'#c97b6a':task.priority==='low'?'#5a8ab0':'#7daa5a';
+    schedule.push({time:fromMins(task.startMins),task:task.task,duration:task.dur+' min',type:'task',color:color,note:task.loc||''});
+    cursor=task.startMins+task.dur;
+
+    // Return travel
+    if(travelNeeded>0){
+      schedule.push({time:fromMins(cursor),task:'🚗 Return from '+task.task,duration:travelNeeded+' min',type:'travel',color:'#f0a500',note:'Allow '+travelNeeded+' min return'});
+      cursor+=travelNeeded;
+    }
+  });
+
+  // Fill remaining flexible tasks
+  flexible.forEach(function(ft){
+    if(cursor<dayEnd){
+      schedule.push({time:fromMins(cursor),task:ft.task,duration:ft.dur+' min',type:'task',color:'#2a6496',note:ft.loc||''});
+      cursor+=ft.dur;
+    } else if(cursor<projEnd){
+      schedule.push({time:fromMins(cursor),task:ft.task,duration:ft.dur+' min',type:'task',color:'#6b3fa0',note:'Project time'});
+      cursor+=ft.dur;
+    } else {
+      conflicts.push('⚠ '+ft.task+' — no time slot available today');
+    }
+  });
+
+  // Summary
+  var totalTasks=pmdData.length;
+  var totalTravel=schedule.filter(function(s){return s.type==='travel';}).length/2;
+  var summary=totalTasks+' tasks scheduled'+(totalTravel>0?', '+Math.round(totalTravel)+' location visit'+(totalTravel>1?'s':''):'')+(conflicts.length>0?'. '+conflicts.length+' conflict'+(conflicts.length>1?'s':'')+' flagged':'');
+
+  return {schedule:schedule,summary:summary,conflicts:conflicts};
 }
 function renderPMDResult(result){
   var html='';
