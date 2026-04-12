@@ -1937,36 +1937,25 @@ function syncAllTabs(){
   var tv=state.tabVisibility||{};
   var tn=state.tabNames||{};
 
-  // Power-only tabs hidden in simple mode
   var powerOnly=['projwork','projects','progress','schedule','overdue','history','capture'];
-  // Optional tabs (controlled by tabVisibility)
   var optional=['schedule','overdue','history','capture'];
 
-  var tabs=document.querySelectorAll('.tab');
+  var tabs=document.querySelectorAll('[data-tab]');
   tabs.forEach(function(tb){
-    var oc=tb.getAttribute('onclick')||'';
+    var tabId=tb.getAttribute('data-tab');
+    if(!tabId)return;
 
-    // Extract tab id from onclick
-    var match=oc.match(/'([^']+)'/);
-    if(!match)return;
-    var tabId=match[1];
-
-    // Rename if needed
-    if(tabId==='regwork'){
+    // Rename if needed — update text only
+    if(tabId==='regwork'||tabId==='projwork'){
       var badge=tb.querySelector('.bx');
-      var badgeHtml=badge?badge.outerHTML:'';
-      tb.innerHTML=(tn.regwork||'Regular')+' '+badgeHtml;
-      // Re-attach onclick since innerHTML was replaced
-      tb.setAttribute('onclick',"showTab('regwork',this)");
-    }
-    if(tabId==='projwork'){
-      var badge=tb.querySelector('.bx');
-      var badgeHtml=badge?badge.outerHTML:'';
-      tb.innerHTML=(tn.projwork||'Pipeline')+' '+badgeHtml;
-      tb.setAttribute('onclick',"showTab('projwork',this)");
+      var newName=tabId==='regwork'?(tn.regwork||'Regular'):(tn.projwork||'Pipeline');
+      // Clear text nodes only
+      Array.from(tb.childNodes).forEach(function(n){if(n.nodeType===3)n.parentNode.removeChild(n);});
+      var txt=document.createTextNode(newName+' ');
+      tb.insertBefore(txt,tb.firstChild);
     }
 
-    // Visibility logic
+    // Visibility
     var show=true;
     if(isSimple&&powerOnly.indexOf(tabId)>-1) show=false;
     if(optional.indexOf(tabId)>-1&&tv[tabId]===false) show=false;
