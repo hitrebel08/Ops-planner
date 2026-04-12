@@ -399,17 +399,17 @@ function installPWA(){
   </div>
 </div>
 <div class="tabs">
-  <div class="tab active" onclick="showTab('today',this)">Today</div>
-  <div class="tab" onclick="showTab('regwork',this)">Regular <span class="bx" id="b-rw">0</span></div>
-  <div class="tab" onclick="showTab('projwork',this)">Pipeline <span class="bx" id="b-pw">0</span></div>
-  <div class="tab" onclick="showTab('projects',this)">Projects & Ideas</div>
-  <div class="tab" onclick="showTab('schedule',this)">Schedule</div>
-  <div class="tab" onclick="showTab('overdue',this)">Overdue <span class="bx" id="b-ov">0</span></div>
-  <div class="tab" onclick="showTab('progress',this)">Progress</div>
-  <div class="tab" onclick="showTab('history',this)">History</div>
-  <div class="tab" onclick="showTab('tomorrow',this)">Tomorrow</div>
-  <div class="tab" onclick="showTab('capture',this)">Capture</div>
-  <div class="tab" onclick="showTab('settings',this)">⚙ Settings</div>
+  <div class="tab" data-tab="today" active">Today</div>
+  <div class="tab" data-tab="regwork"">Regular <span class="bx" id="b-rw">0</span></div>
+  <div class="tab" data-tab="projwork"">Pipeline <span class="bx" id="b-pw">0</span></div>
+  <div class="tab" data-tab="projects"">Projects & Ideas</div>
+  <div class="tab" data-tab="schedule"">Schedule</div>
+  <div class="tab" data-tab="overdue"">Overdue <span class="bx" id="b-ov">0</span></div>
+  <div class="tab" data-tab="progress"">Progress</div>
+  <div class="tab" data-tab="history"">History</div>
+  <div class="tab" data-tab="tomorrow"">Tomorrow</div>
+  <div class="tab" data-tab="capture"">Capture</div>
+  <div class="tab" data-tab="settings"">⚙ Settings</div>
 </div>
 
 <!-- ═══ TODAY ═══ -->
@@ -1593,18 +1593,7 @@ function toggleTab(el,id){
 }
 
 function rebuildTabs(){
-  const tv=state.tabVisibility||{};
-  // show/hide optional tab elements
-  OPT_TABS.forEach(function(t){
-    var on=tv[t.id]!==false;
-    // find tab button
-    var tabs=document.querySelectorAll('.tab');
-    tabs.forEach(function(tb){
-      if(tb.getAttribute('onclick')&&tb.getAttribute('onclick').indexOf("'"+t.id+"'")>-1){
-        tb.style.display=on?'':'none';
-      }
-    });
-  });
+  syncAllTabs();
 }
 
 // ── SETTINGS FUNCTIONS ──
@@ -1929,23 +1918,7 @@ function saveTabNames(){
 }
 
 function applyTabNames(){
-  var tn=state.tabNames||{};
-  // Update tab bar labels
-  var tabs=document.querySelectorAll('.tab');
-  tabs.forEach(function(tb){
-    var oc=tb.getAttribute('onclick')||'';
-    if(oc.indexOf("'regwork'")>-1){
-      // Keep badge
-      var badge=tb.querySelector('.bx');
-      var badgeHtml=badge?badge.outerHTML:'';
-      tb.innerHTML=(tn.regwork||'Regular')+' '+badgeHtml;
-    }
-    if(oc.indexOf("'projwork'")>-1){
-      var badge=tb.querySelector('.bx');
-      var badgeHtml=badge?badge.outerHTML:'';
-      tb.innerHTML=(tn.projwork||'Pipeline')+' '+badgeHtml;
-    }
-  });
+  syncAllTabs();
 }
 
 function renderTabNames(){
@@ -1954,6 +1927,51 @@ function renderTabNames(){
   var pw=document.getElementById('tabname-projwork');
   if(rw)rw.value=tn.regwork||'Regular';
   if(pw)pw.value=tn.projwork||'Pipeline';
+}
+
+
+// ── UNIFIED TAB SYNC ──
+function syncAllTabs(){
+  var mode=state.appMode||'power';
+  var isSimple=mode==='simple';
+  var tv=state.tabVisibility||{};
+  var tn=state.tabNames||{};
+
+  // Power-only tabs hidden in simple mode
+  var powerOnly=['projwork','projects','progress','schedule','overdue','history','capture'];
+  // Optional tabs (controlled by tabVisibility)
+  var optional=['schedule','overdue','history','capture'];
+
+  var tabs=document.querySelectorAll('.tab');
+  tabs.forEach(function(tb){
+    var oc=tb.getAttribute('onclick')||'';
+
+    // Extract tab id from onclick
+    var match=oc.match(/'([^']+)'/);
+    if(!match)return;
+    var tabId=match[1];
+
+    // Rename if needed
+    if(tabId==='regwork'){
+      var badge=tb.querySelector('.bx');
+      var badgeHtml=badge?badge.outerHTML:'';
+      tb.innerHTML=(tn.regwork||'Regular')+' '+badgeHtml;
+      // Re-attach onclick since innerHTML was replaced
+      tb.setAttribute('onclick',"showTab('regwork',this)");
+    }
+    if(tabId==='projwork'){
+      var badge=tb.querySelector('.bx');
+      var badgeHtml=badge?badge.outerHTML:'';
+      tb.innerHTML=(tn.projwork||'Pipeline')+' '+badgeHtml;
+      tb.setAttribute('onclick',"showTab('projwork',this)");
+    }
+
+    // Visibility logic
+    var show=true;
+    if(isSimple&&powerOnly.indexOf(tabId)>-1) show=false;
+    if(optional.indexOf(tabId)>-1&&tv[tabId]===false) show=false;
+    tb.style.display=show?'':'none';
+  });
 }
 
 // ── APP MODE ──
@@ -1968,16 +1986,8 @@ function applyAppMode(){
   var mode=state.appMode||'power';
   var isSimple=mode==='simple';
 
-  // Tab visibility — hide power tabs in simple mode
-  var powerOnlyTabs=['projwork','projects','progress','schedule','overdue','history','capture'];
-  powerOnlyTabs.forEach(function(id){
-    var tabs=document.querySelectorAll('.tab');
-    tabs.forEach(function(tb){
-      if(tb.getAttribute('onclick')&&tb.getAttribute('onclick').indexOf("'"+id+"'")>-1){
-        tb.style.display=isSimple?'none':'';
-      }
-    });
-  });
+  // Tab visibility handled by syncAllTabs
+  syncAllTabs();
 
   // Hide project work section in Today tab
   var pwSec=document.getElementById('pw-block-sec');
@@ -2132,6 +2142,12 @@ function focusNext(){
 
 
 // ── BOOT ──
+// Tab click via event delegation - more reliable than inline onclick
+document.querySelector('.tabs').addEventListener('click', function(e){
+  var tab = e.target.closest('[data-tab]');
+  if(!tab) return;
+  showTab(tab.getAttribute('data-tab'), tab);
+});
 load();
 if(Notification.permission==='granted')scheduleAllNotifications();
 if(state.theme)setTheme(state.theme);
