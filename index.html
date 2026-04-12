@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Operations Center v2.4.3</title>
+<title>My Operations Center v2.5.2</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0f18;font-family:Arial,sans-serif;color:#fff;padding:12px;max-width:640px;margin:0 auto;min-height:100vh;transition:background .3s,color .3s}
@@ -256,6 +256,84 @@ body.bright .fps{background:#f0ebff;border-color:#d4b8f0;color:#888}
 .focus-btn-done{flex:1;padding:12px;background:#27ae60;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer}
 .focus-empty{text-align:center;color:#c678dd;font-size:15px;padding:30px 0;line-height:2}
 
+
+/* MODE SWITCHER */
+.mode-card{border-radius:12px;padding:14px;margin-bottom:10px;border:2px solid transparent;cursor:pointer;transition:all .2s}
+.mode-card.selected{border-color:#4a9fd4}
+.mode-card-simple{background:#0a1520}
+.mode-card-power{background:#0a1520}
+body.bright .mode-card-simple,.mode-card-power{background:#f8fafc}
+.mode-card-title{font-size:14px;font-weight:bold;color:#fff;margin-bottom:4px}
+body.bright .mode-card-title{color:#1a1a2e}
+.mode-card-desc{font-size:11px;color:#555;line-height:1.6}
+.mode-badge{display:inline-block;font-size:9px;padding:2px 8px;border-radius:10px;margin-bottom:6px;font-weight:bold}
+.mode-badge-simple{background:#1a3a1a;color:#4caf50}
+.mode-badge-power{background:#1a1a3a;color:#4a9fd4}
+
+
+/* FIRST LAUNCH SCREEN */
+#launch-screen{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f18;z-index:99999;overflow-y:auto;padding:30px 20px 40px;box-sizing:border-box}
+#launch-screen.active{display:block}
+.launch-logo{text-align:center;margin-bottom:8px;font-size:48px}
+.launch-title{text-align:center;font-size:22px;font-weight:bold;color:#fff;margin-bottom:4px}
+.launch-sub{text-align:center;font-size:12px;color:#555;margin-bottom:32px}
+.launch-section{font-size:10px;color:#4a9fd4;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}
+.launch-name-input{width:100%;background:#111827;border:1px solid #2a6496;border-radius:10px;color:#fff;font-size:16px;padding:14px;font-family:Arial;box-sizing:border-box;margin-bottom:24px}
+.launch-name-input:focus{outline:none;border-color:#4a9fd4}
+.launch-name-input::placeholder{color:#333}
+.launch-mode-card{border-radius:14px;padding:16px;margin-bottom:12px;border:2px solid #1e2a3a;cursor:pointer;transition:all .2s;background:#111827}
+.launch-mode-card.selected{border-color:#4a9fd4;background:#0a1a2a}
+.launch-mode-card.selected-simple{border-color:#4caf50;background:#0a1a0a}
+.launch-mode-badge{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:bold;display:inline-block;margin-bottom:8px}
+.launch-mode-title{font-size:15px;font-weight:bold;color:#fff;margin-bottom:5px}
+.launch-mode-desc{font-size:11px;color:#555;line-height:1.6}
+.launch-mode-features{margin-top:8px;font-size:10px;color:#444;line-height:1.8}
+.launch-start-btn{width:100%;padding:16px;background:#2a6496;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;margin-top:8px;transition:background .2s}
+.launch-start-btn:active{background:#1a4a76}
+body.bright #launch-screen{background:#f0f4f8}
+body.bright .launch-mode-card{background:#fff;border-color:#dde3ed}
+body.bright .launch-mode-card.selected{background:#e8f4ff;border-color:#2a6496}
+body.bright .launch-mode-card.selected-simple{background:#e8fff0;border-color:#27ae60}
+body.bright .launch-mode-title{color:#1a1a2e}
+
+
+/* PLAN MY DAY */
+#pmd-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f18;z-index:9998;overflow-y:auto;padding:20px;box-sizing:border-box}
+#pmd-overlay.active{display:block}
+.pmd-header{text-align:center;margin-bottom:20px;padding-top:10px}
+.pmd-title{font-size:18px;font-weight:bold;color:#fff;margin-bottom:4px}
+.pmd-sub{font-size:11px;color:#555}
+.pmd-step{display:none}
+.pmd-step.active{display:block}
+.pmd-q-card{background:#111827;border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid #1e2a3a}
+.pmd-q-task{font-size:14px;font-weight:bold;color:#fff;margin-bottom:4px}
+.pmd-q-time{font-size:11px;color:#4a9fd4;margin-bottom:12px}
+.pmd-q-label{font-size:11px;color:#666;margin-bottom:8px}
+.pmd-options{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.pmd-opt{padding:7px 12px;border-radius:20px;border:1px solid #1e2a3a;background:#0a0f18;color:#aaa;font-size:11px;cursor:pointer;transition:all .2s}
+.pmd-opt.selected{background:#2a6496;color:#fff;border-color:#4a9fd4}
+.pmd-opt-green.selected{background:#1a4a1a;color:#4caf50;border-color:#4caf50}
+.pmd-next-btn{width:100%;padding:14px;background:#2a6496;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:bold;cursor:pointer;margin-top:8px}
+.pmd-generating{text-align:center;padding:40px 20px}
+.pmd-gen-icon{font-size:40px;margin-bottom:12px;animation:spin 2s linear infinite}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.pmd-gen-text{font-size:14px;color:#4a9fd4;margin-bottom:8px}
+.pmd-gen-sub{font-size:11px;color:#555}
+.pmd-schedule-item{display:flex;gap:12px;padding:12px;background:#111827;border-radius:10px;margin-bottom:8px;border-left:4px solid #2a6496}
+.pmd-schedule-time{font-size:12px;color:#4a9fd4;font-weight:bold;min-width:45px;padding-top:2px}
+.pmd-schedule-body{flex:1}
+.pmd-schedule-task{font-size:13px;color:#fff;font-weight:bold;margin-bottom:2px}
+.pmd-schedule-meta{font-size:10px;color:#555}
+.pmd-conflict{border-left-color:#e05555!important;background:#1a0a0a!important}
+.pmd-travel{border-left-color:#f0a500!important;background:#1a1000!important;opacity:.8}
+.pmd-close-btn{width:100%;padding:12px;background:transparent;border:1px solid #1e2a3a;color:#555;border-radius:10px;font-size:13px;cursor:pointer;margin-top:8px}
+body.bright #pmd-overlay{background:#f0f4f8}
+body.bright .pmd-q-card{background:#fff;border-color:#dde3ed}
+body.bright .pmd-q-task{color:#1a1a2e}
+body.bright .pmd-opt{background:#f8fafc;border-color:#dde3ed;color:#555}
+body.bright .pmd-schedule-item{background:#fff;border-color:#dde3ed}
+body.bright .pmd-schedule-task{color:#1a1a2e}
+
 </style>
 <link rel="manifest" id="pwa-manifest">
 <meta name="theme-color" content="#0a0f18">
@@ -313,7 +391,7 @@ function installPWA(){
 <body>
 <div class="hdr">
 <div id="pwa-install-btn" style="display:none;margin-top:6px"><button onclick="installPWA()" style="background:#2a6496;color:#fff;border:none;border-radius:14px;padding:5px 16px;font-size:11px;cursor:pointer;font-weight:bold">⬇ Install App</button></div>
-  <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v2.4.3</span></h1>
+  <h1>⚙ My Operations Center <span style="font-size:10px;color:#444;font-weight:normal">v2.5.2</span></h1>
   <div class="dt" id="dtLine"></div>
   <div class="theme-toggle">
     <div class="theme-btn active" id="theme-dark" onclick="setTheme('dark')">🌙 Dark</div>
@@ -414,15 +492,21 @@ function installPWA(){
       </div>
     </div>
   </div>
-  <div class="sec">
+  <div class="sec" id="momentum-sec">
     <div class="st">Project Momentum <span class="st-act" onclick="showTab('projects',document.querySelector('.tab:nth-child(4))'))">Manage Projects →</span></div>
     <div id="momentum-list"></div>
   </div>
+
+  <button onclick="startPlanMyDay()" style="width:100%;padding:14px;background:linear-gradient(135deg,#1a3a5c,#2a6496);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:bold;cursor:pointer;margin-bottom:4px;letter-spacing:.3px">🗓 Plan My Day →</button>
+  <div style="font-size:10px;color:#444;text-align:center;margin-bottom:8px">Smart scheduling · Powered by AI</div>
 </div>
 
 <!-- ═══ REGULAR WORK ═══ -->
 <div class="panel" id="panel-regwork">
-  <div class="sboxes">
+  <div id="simple-mode-rw" style="display:none;margin-bottom:10px">
+    <div style="font-size:11px;color:#555;margin-bottom:8px">Your tasks for today — tap Done ✓ when complete.</div>
+  </div>
+  <div class="sboxes" id="rw-stage-boxes">
     <div class="sbox fbox" id="rwf-0" onclick="setFilter('rw',0)"><div class="snum" style="color:#2a6496" id="rw0">0</div><div class="slbl">Registered</div></div>
     <div class="sbox fbox" id="rwf-1" onclick="setFilter('rw',1)"><div class="snum" style="color:#f0a500" id="rw1">0</div><div class="slbl">Follow Up</div></div>
     <div class="sbox fbox" id="rwf-2" onclick="setFilter('rw',2)"><div class="snum" style="color:#d44ad4" id="rw2">0</div><div class="slbl">Executing</div></div>
@@ -579,6 +663,9 @@ let state={
   history:[],
   workBlock:'',projBlock:'',
   username:'',
+  appMode:'power',
+  firstLaunch:true,
+  tabNames:{regwork:'Regular',projwork:'Pipeline'},
   tabVisibility:{schedule:true,overdue:true,history:true,capture:true},
   notifSettings:{task:true,meeting_early:true,meeting_now:true,morning:false,reminderMins:15},
   workBlocks:[
@@ -606,6 +693,8 @@ function load(){
   rebuildTabs();
   updateTodayBlockHeaders();
   populateProjDropdown();
+  applyAppMode();
+  applyTabNames();
 }
 
 function logHistory(text,tag,tagClass){
@@ -1533,16 +1622,18 @@ function updateHeaderName(){
   const h=document.querySelector('.hdr h1');
   if(!h)return;
   if(state.username){
-    h.innerHTML='⚙ '+state.username+"'s Ops Center <span style='font-size:10px;color:#444;font-weight:normal'>v2.4.3</span>";
+    h.innerHTML='⚙ '+state.username+"'s Ops Center <span style='font-size:10px;color:#444;font-weight:normal'>v2.5.2</span>";
   }
 }
 
 function renderSettingsPanel(){
   renderTabVis();
   renderWorkBlocks();
+  renderTabNames();
   initNotifStatus();
   renderNotifToggles();
   renderReminderMins();
+  applyAppMode();
   const u=document.getElementById('set-username');
   if(u&&state.username)u.value=state.username;
   const t=state.theme||'dark';
@@ -1558,6 +1649,376 @@ function resetApp(){
   location.reload();
 }
 
+
+
+
+
+
+// ── PLAN MY DAY ──
+var pmdTaskData=[];
+
+function startPlanMyDay(){
+  // Get all today's incomplete tasks with times
+  var timedTasks=state.items.filter(function(x){
+    return x.stage<3&&x.time&&x.date===todayStr;
+  });
+  // Get all tasks without times too
+  var allTasks=state.items.filter(function(x){
+    return x.stage<3&&x.date===todayStr;
+  });
+
+  if(!allTasks.length){
+    alert('No tasks for today. Add tasks first!');return;
+  }
+
+  // Build question set for each task
+  pmdTaskData=allTasks.map(function(item){
+    var isMeeting=/meet|meeting/i.test(item.title);
+    var isVisit=/visit|visit/i.test(item.title);
+    var isCall=/call|speak|talk/i.test(item.title);
+    var needsLocation=isMeeting||isVisit;
+    var needsDuration=isMeeting||isVisit||isCall;
+    return {
+      item:item,
+      isMeeting:isMeeting,
+      isVisit:isVisit,
+      isCall:isCall,
+      needsLocation:needsLocation,
+      needsDuration:needsDuration,
+      location:isCall?'phone':null,
+      duration:null,
+      travelTime:null
+    };
+  });
+
+  // Build questions UI
+  var ql=document.getElementById('pmd-questions-list');
+  var html='';
+
+  // Only show questions for tasks that need them
+  var tasksNeedingInfo=pmdTaskData.filter(function(t){return t.needsLocation||t.needsDuration;});
+
+  if(!tasksNeedingInfo.length){
+    // No questions needed — go straight to generate
+    submitPlanMyDay();return;
+  }
+
+  html+='<div style="font-size:11px;color:#4a9fd4;margin-bottom:12px">Quick questions about your tasks:</div>';
+
+  pmdTaskData.forEach(function(td,idx){
+    if(!td.needsLocation&&!td.needsDuration)return;
+    html+='<div class="pmd-q-card">';
+    html+='<div class="pmd-q-task">'+td.item.title+'</div>';
+    if(td.item.time)html+='<div class="pmd-q-time">⏰ '+td.item.time+'</div>';
+
+    if(td.needsLocation){
+      html+='<div class="pmd-q-label">Where is this?</div>';
+      html+='<div class="pmd-options">';
+      ['At my factory','Their office','Neutral location','Phone/Online'].forEach(function(loc){
+        html+='<div class="pmd-opt" onclick="selectPMDOption(this,'+idx+',\'location\',\''+loc+'\')" data-val="'+loc+'">'+loc+'</div>';
+      });
+      html+='</div>';
+    }
+
+    if(td.needsDuration){
+      html+='<div class="pmd-q-label">How long?</div>';
+      html+='<div class="pmd-options">';
+      ['15 min','30 min','1 hour','2 hours','3 hours'].forEach(function(dur){
+        html+='<div class="pmd-opt" onclick="selectPMDOption(this,'+idx+',\'duration\',\''+dur+'\')" data-val="'+dur+'">'+dur+'</div>';
+      });
+      html+='</div>';
+    }
+
+    if(td.needsLocation){
+      html+='<div class="pmd-q-label">Travel time from your base?</div>';
+      html+='<div class="pmd-options">';
+      ['No travel','15 min','30 min','45 min','1 hour+'].forEach(function(tt){
+        html+='<div class="pmd-opt" onclick="selectPMDOption(this,'+idx+',\'travelTime\',\''+tt+'\')" data-val="'+tt+'">'+tt+'</div>';
+      });
+      html+='</div>';
+    }
+
+    html+='</div>';
+  });
+
+  ql.innerHTML=html;
+
+  // Show overlay
+  document.getElementById('pmd-overlay').classList.add('active');
+  showPMDStep('questions');
+}
+
+function selectPMDOption(el,idx,field,val){
+  // Deselect siblings in same group
+  var card=el.parentElement;
+  card.querySelectorAll('.pmd-opt').forEach(function(o){o.classList.remove('selected');});
+  el.classList.add('selected');
+  pmdTaskData[idx][field]=val;
+}
+
+function showPMDStep(step){
+  document.querySelectorAll('.pmd-step').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('pmd-step-'+step).classList.add('active');
+}
+
+function closePMD(){
+  document.getElementById('pmd-overlay').classList.remove('active');
+  showPMDStep('questions');
+}
+
+async function submitPlanMyDay(){
+  showPMDStep('generating');
+
+  // Build prompt for Claude
+  var taskList=pmdTaskData.map(function(td){
+    var t=td.item;
+    var info='- '+t.title;
+    if(t.time)info+=' at '+t.time;
+    if(t.priority)info+=' ['+t.priority+' priority]';
+    if(td.location)info+=' | Location: '+td.location;
+    if(td.duration)info+=' | Duration: '+td.duration;
+    if(td.travelTime&&td.travelTime!=='No travel')info+=' | Travel time: '+td.travelTime+' each way';
+    return info;
+  }).join('\n');
+
+  var workBlocks=state.workBlocks||[];
+  var rw=workBlocks.find(function(b){return b.id==='regular';});
+  var pw=workBlocks.find(function(b){return b.id==='project';});
+
+  var workHours=(rw?rw.timeFrom+' to '+rw.timeTo:'9:30 to 17:00');
+  var projHours=pw?' then project work '+pw.timeFrom+' to '+pw.timeTo:'';
+  var prompt=[
+    'You are a smart personal secretary. Plan the day based on these tasks:',
+    '',
+    taskList,
+    '',
+    'Work hours: '+workHours+projHours,
+    '',
+    'Rules:',
+    '1. Schedule fixed-time tasks at their specified time',
+    '2. Add travel time before and after location-based tasks',
+    '3. Flag any conflicts clearly',
+    '4. Fill flexible tasks in available gaps',
+    '5. Keep it realistic',
+    '',
+    'Respond ONLY in JSON format, no other text:',
+    '{"schedule":[{"time":"HH:MM","task":"task name","duration":"X min","type":"task|travel|break|conflict","note":"optional","color":"#hex"}],"summary":"one line summary","conflicts":["conflict description"]}'
+  ].join("\n");
+
+  try{
+    var response=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    var data=await response.json();
+    var text=data.content.map(function(i){return i.text||'';}).join('');
+    var clean=text.replace(/```json|```/g,'').trim();
+    var result=JSON.parse(clean);
+    renderPMDSchedule(result);
+  }catch(e){
+    // Fallback if API fails
+    renderPMDScheduleFallback();
+  }
+}
+
+function renderPMDSchedule(result){
+  var html='';
+  if(result.summary){
+    html+='<div style="background:#0a1520;border-radius:10px;padding:12px;margin-bottom:12px;border-left:4px solid #4a9fd4">';
+    html+='<div style="font-size:10px;color:#4a9fd4;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Your Day</div>';
+    html+='<div style="font-size:13px;color:#fff">'+result.summary+'</div>';
+    html+='</div>';
+  }
+  if(result.conflicts&&result.conflicts.length){
+    result.conflicts.forEach(function(c){
+      html+='<div style="background:#1a0a0a;border-radius:10px;padding:10px;margin-bottom:8px;border-left:4px solid #e05555">';
+      html+='<div style="font-size:10px;color:#e05555;font-weight:bold">⚠ Conflict</div>';
+      html+='<div style="font-size:12px;color:#aaa;margin-top:2px">'+c+'</div>';
+      html+='</div>';
+    });
+  }
+  if(result.schedule){
+    result.schedule.forEach(function(s){
+      var isTravel=s.type==='travel';
+      var isConflict=s.type==='conflict';
+      var color=s.color||(isTravel?'#f0a500':isConflict?'#e05555':'#2a6496');
+      html+='<div class="pmd-schedule-item'+(isConflict?' pmd-conflict':isTravel?' pmd-travel':'')+'" style="border-left-color:'+color+'">';
+      html+='<div class="pmd-schedule-time">'+s.time+'</div>';
+      html+='<div class="pmd-schedule-body">';
+      html+='<div class="pmd-schedule-task">'+s.task+'</div>';
+      var meta=[];
+      if(s.duration)meta.push(s.duration);
+      if(s.note)meta.push(s.note);
+      if(meta.length)html+='<div class="pmd-schedule-meta">'+meta.join(' · ')+'</div>';
+      html+='</div></div>';
+    });
+  }
+  document.getElementById('pmd-schedule-output').innerHTML=html;
+  showPMDStep('schedule');
+}
+
+function renderPMDScheduleFallback(){
+  var html='<div style="text-align:center;padding:20px;color:#e05555">Could not connect to AI. Check your internet and try again.</div>';
+  document.getElementById('pmd-schedule-output').innerHTML=html;
+  showPMDStep('schedule');
+}
+
+function acceptSchedule(){
+  closePMD();
+  // Switch to schedule/tomorrow tab
+  showTab('tomorrow',document.querySelector('.tab'));
+}
+
+// ── FIRST LAUNCH ──
+var selectedLaunchMode='power';
+
+function selectLaunchMode(mode){
+  selectedLaunchMode=mode;
+  var simCard=document.getElementById('lm-simple');
+  var powCard=document.getElementById('lm-power');
+  if(simCard){
+    simCard.className='launch-mode-card'+(mode==='simple'?' selected-simple':'');
+  }
+  if(powCard){
+    powCard.className='launch-mode-card'+(mode==='power'?' selected':'');
+  }
+}
+
+function completeLaunch(){
+  var name=document.getElementById('launch-name').value.trim();
+  if(!name){document.getElementById('launch-name').focus();document.getElementById('launch-name').style.borderColor='#e05555';return;}
+  state.username=name;
+  state.appMode=selectedLaunchMode;
+  state.firstLaunch=false;
+  save();
+  document.getElementById('launch-screen').classList.remove('active');
+  updateHeaderName();
+  applyAppMode();
+  applyTabNames();
+  rebuildTabs();
+}
+
+function checkFirstLaunch(){
+  if(state.firstLaunch===true||state.firstLaunch===undefined){
+    // Only show if no username set
+    if(!state.username){
+      document.getElementById('launch-screen').classList.add('active');
+    } else {
+      state.firstLaunch=false;
+      save();
+    }
+  }
+}
+
+// ── TAB NAMES ──
+function saveTabNames(){
+  if(!state.tabNames)state.tabNames={};
+  var rw=document.getElementById('tabname-regwork');
+  var pw=document.getElementById('tabname-projwork');
+  if(rw)state.tabNames.regwork=rw.value.trim()||'Regular';
+  if(pw)state.tabNames.projwork=pw.value.trim()||'Pipeline';
+  save();
+  applyTabNames();
+  var ok=document.getElementById('tabnames-saved');
+  if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},2000);}
+}
+
+function applyTabNames(){
+  var tn=state.tabNames||{};
+  // Update tab bar labels
+  var tabs=document.querySelectorAll('.tab');
+  tabs.forEach(function(tb){
+    var oc=tb.getAttribute('onclick')||'';
+    if(oc.indexOf("'regwork'")>-1){
+      // Keep badge
+      var badge=tb.querySelector('.bx');
+      var badgeHtml=badge?badge.outerHTML:'';
+      tb.innerHTML=(tn.regwork||'Regular')+' '+badgeHtml;
+    }
+    if(oc.indexOf("'projwork'")>-1){
+      var badge=tb.querySelector('.bx');
+      var badgeHtml=badge?badge.outerHTML:'';
+      tb.innerHTML=(tn.projwork||'Pipeline')+' '+badgeHtml;
+    }
+  });
+}
+
+function renderTabNames(){
+  var tn=state.tabNames||{};
+  var rw=document.getElementById('tabname-regwork');
+  var pw=document.getElementById('tabname-projwork');
+  if(rw)rw.value=tn.regwork||'Regular';
+  if(pw)pw.value=tn.projwork||'Pipeline';
+}
+
+// ── APP MODE ──
+function setAppMode(mode){
+  state.appMode=mode;
+  save();
+  applyAppMode();
+  renderSettingsPanel();
+}
+
+function applyAppMode(){
+  var mode=state.appMode||'power';
+  var isSimple=mode==='simple';
+
+  // Tab visibility — hide power tabs in simple mode
+  var powerOnlyTabs=['projwork','projects','progress','schedule','overdue','history','capture'];
+  powerOnlyTabs.forEach(function(id){
+    var tabs=document.querySelectorAll('.tab');
+    tabs.forEach(function(tb){
+      if(tb.getAttribute('onclick')&&tb.getAttribute('onclick').indexOf("'"+id+"'")>-1){
+        tb.style.display=isSimple?'none':'';
+      }
+    });
+  });
+
+  // Hide project work section in Today tab
+  var pwSec=document.getElementById('pw-block-sec');
+  if(pwSec)pwSec.style.display=isSimple?'none':'';
+
+  // Focus mode stays in simple mode too
+  var focusRow=document.querySelector('.focus-toggle-row');
+  if(focusRow)focusRow.style.display='';
+
+  // Hide focus section if visible
+  var focusSec=document.getElementById('focus-section');
+  if(focusSec&&isSimple){focusSec.classList.remove('active');var sw=document.getElementById('focus-sw');if(sw)sw.classList.remove('on');}
+
+  // Hide momentum section
+  var momSec=document.getElementById('momentum-sec');
+  if(momSec)momSec.style.display=isSimple?'none':'';
+
+  // In simple mode — also simplify Regular Work tab
+  // Hide pipeline stage boxes and filter in simple mode
+  var stageBoxes=document.querySelector('.sboxes');
+  var filterHint=document.querySelector('.filter-hint');
+  var allBtn=document.getElementById('rw-all-btn');
+
+  // Update mode cards
+  var simCard=document.getElementById('mode-simple');
+  var powCard=document.getElementById('mode-power');
+  if(simCard){
+    simCard.style.borderColor=isSimple?'#4caf50':'transparent';
+    simCard.querySelector('.mode-badge').textContent=isSimple?'✓ Active':'Simple';
+  }
+  if(powCard){
+    powCard.style.borderColor=!isSimple?'#4a9fd4':'transparent';
+    powCard.querySelector('.mode-badge').textContent=!isSimple?'✓ Active':'Power';
+  }
+
+  // Simple mode header indicator
+  var hdr=document.querySelector('.hdr h1');
+  if(hdr&&isSimple&&!state.username){
+    hdr.innerHTML='📋 Daily Task Manager <span style="font-size:10px;color:#444;font-weight:normal">v2.5.2</span>';
+  }
+}
 
 // ── FOCUS MODE ──
 const PRIVAL2={high:0,medium:1,low:2};
@@ -1680,6 +2141,23 @@ if(state.theme)setTheme(state.theme);
 <div class="panel" id="panel-settings">
 
   <div class="sec">
+    <div class="st">App Mode</div>
+    <div style="font-size:11px;color:#555;margin-bottom:12px">Choose how you want to use the app. You can switch anytime.</div>
+
+    <div class="mode-card mode-card-simple" id="mode-simple" onclick="setAppMode('simple')">
+      <div class="mode-badge mode-badge-simple">✓ Simple</div>
+      <div class="mode-card-title">📋 Daily Task Manager</div>
+      <div class="mode-card-desc">Clean, minimal. Add tasks, set priority, carry forward automatically. Perfect for students and office workers.</div>
+    </div>
+
+    <div class="mode-card mode-card-power" id="mode-power" onclick="setAppMode('power')">
+      <div class="mode-badge mode-badge-power">⚡ Power</div>
+      <div class="mode-card-title">⚙ Operations Center</div>
+      <div class="mode-card-desc">Full pipeline, project tracking, Focus Mode, scheduling and more. Built for business owners and managers.</div>
+    </div>
+  </div>
+
+  <div class="sec">
     <div class="st">Your Profile</div>
     <div style="margin-bottom:6px;font-size:11px;color:#666">Your name (shown in app header)</div>
     <div style="display:flex;gap:6px">
@@ -1755,6 +2233,21 @@ if(state.theme)setTheme(state.theme);
   </div>
 
   <div class="sec">
+    <div class="st">Tab Names</div>
+    <div style="font-size:11px;color:#555;margin-bottom:12px">Rename tabs to match your workflow.</div>
+    <div class="tog-row">
+      <div><div class="tog-label">Regular Work tab</div><div style="font-size:10px;color:#555">Currently shown in tab bar</div></div>
+      <input id="tabname-regwork" class="fi" value="Regular" style="width:110px;font-size:11px" placeholder="Tab name..." />
+    </div>
+    <div class="tog-row">
+      <div><div class="tog-label">Pipeline tab</div><div style="font-size:10px;color:#555">Project task pipeline</div></div>
+      <input id="tabname-projwork" class="fi" value="Pipeline" style="width:110px;font-size:11px" placeholder="Tab name..." />
+    </div>
+    <button onclick="saveTabNames()" style="width:100%;margin-top:10px;padding:9px;background:#2a6496;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:bold;cursor:pointer">✓ Save Tab Names</button>
+    <div id="tabnames-saved" style="font-size:10px;color:#4caf50;text-align:center;margin-top:5px;display:none">✓ Saved!</div>
+  </div>
+
+  <div class="sec">
     <div class="st">Notifications</div>
     <div style="font-size:11px;color:#555;margin-bottom:12px">Get reminded about your tasks and meetings.</div>
 
@@ -1801,13 +2294,75 @@ if(state.theme)setTheme(state.theme);
   <div class="sec">
     <div class="st">About</div>
     <div style="font-size:12px;color:#555;line-height:2">
-      My Operations Center <span style="color:#4a9fd4">v2.4.3</span><br>
+      My Operations Center <span style="color:#4a9fd4">v2.5.2</span><br>
       <span style="font-size:10px">Built for makers, manufacturers & doers.<br>Your data never leaves your device.</span>
     </div>
   </div>
 
 </div>
 
+
+
+<!-- FIRST LAUNCH SCREEN -->
+<div id="launch-screen">
+  <div class="launch-logo">⚙</div>
+  <div class="launch-title">Operations Center</div>
+  <div class="launch-sub">Your daily work, organised.</div>
+
+  <div class="launch-section">What's your name?</div>
+  <input class="launch-name-input" id="launch-name" type="text" placeholder="Enter your name..." maxlength="30" />
+
+  <div class="launch-section">How do you want to use this?</div>
+
+  <div class="launch-mode-card" id="lm-simple" onclick="selectLaunchMode('simple')">
+    <div class="launch-mode-badge" style="background:#1a3a1a;color:#4caf50">📋 Simple</div>
+    <div class="launch-mode-title">Daily Task Manager</div>
+    <div class="launch-mode-desc">Clean and minimal. Perfect for students and office workers.</div>
+    <div class="launch-mode-features">✓ Add tasks · ✓ Set priority · ✓ Carry forward · ✓ Focus Mode</div>
+  </div>
+
+  <div class="launch-mode-card selected" id="lm-power" onclick="selectLaunchMode('power')">
+    <div class="launch-mode-badge" style="background:#1a1a3a;color:#4a9fd4">⚡ Power</div>
+    <div class="launch-mode-title">Operations Center</div>
+    <div class="launch-mode-desc">Full pipeline and project tracking. Built for business owners and managers.</div>
+    <div class="launch-mode-features">✓ Everything in Simple · ✓ Project pipeline · ✓ Progress tracking · ✓ Scheduling</div>
+  </div>
+
+  <button class="launch-start-btn" onclick="completeLaunch()">Let's Go →</button>
+  <div style="text-align:center;margin-top:12px;font-size:10px;color:#333">You can change this anytime in Settings</div>
+</div>
+
+
+<!-- PLAN MY DAY OVERLAY -->
+<div id="pmd-overlay">
+  <div class="pmd-header">
+    <div class="pmd-title">🗓 Plan My Day</div>
+    <div class="pmd-sub">Answer a few quick questions — AI will arrange your day</div>
+  </div>
+
+  <!-- STEP 1: Questions -->
+  <div class="pmd-step active" id="pmd-step-questions">
+    <div id="pmd-questions-list"></div>
+    <button class="pmd-next-btn" onclick="submitPlanMyDay()">✓ Generate My Schedule →</button>
+    <button class="pmd-close-btn" onclick="closePMD()">✕ Cancel</button>
+  </div>
+
+  <!-- STEP 2: Generating -->
+  <div class="pmd-step" id="pmd-step-generating">
+    <div class="pmd-generating">
+      <div class="pmd-gen-icon">⚙</div>
+      <div class="pmd-gen-text">Your secretary is planning your day...</div>
+      <div class="pmd-gen-sub">Analysing tasks · Checking conflicts · Optimising schedule</div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Schedule -->
+  <div class="pmd-step" id="pmd-step-schedule">
+    <div id="pmd-schedule-output"></div>
+    <button class="pmd-next-btn" onclick="acceptSchedule()" style="background:#27ae60">✓ Accept This Schedule</button>
+    <button class="pmd-close-btn" onclick="closePMD()">✕ Close</button>
+  </div>
+</div>
 
 </body>
 </html>
