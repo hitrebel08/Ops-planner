@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Operations Center v3.2</title>
+<title>My Operations Center v3.3</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0f18;font-family:Arial,sans-serif;color:#fff;padding:12px;max-width:640px;margin:0 auto;min-height:100vh;transition:background .3s,color .3s}
@@ -1713,13 +1713,13 @@ function startPlanMyDay(){
       html+='</div>';
     }
     html+='<div class="pmd-q-label">How long?</div><div class="pmd-options">';
-    ['15 min','30 min','1 hour','2 hours'].forEach(function(dur){
+    ['15 min','30 min','1 hour','2 hours','3 hours','4 hours','Half day','Full day'].forEach(function(dur){
       html+='<div class="pmd-opt" onclick="pmdSel(this,'+idx+',\'duration\',\''+dur+'\')">'+dur+'</div>';
     });
     html+='</div>';
     if(td.isMeet||td.isVisit){
       html+='<div class="pmd-q-label">Travel time?</div><div class="pmd-options">';
-      ['No travel','15 min','30 min','45 min','1 hour+'].forEach(function(tt){
+      ['No travel','15 min','30 min','45 min','1 hour','1.5 hours','2 hours','3 hours','4 hours'].forEach(function(tt){
         html+='<div class="pmd-opt" onclick="pmdSel(this,'+idx+',\'travelTime\',\''+tt+'\')">'+tt+'</div>';
       });
       html+='</div>';
@@ -1756,12 +1756,20 @@ function submitPlanMyDay(){
 // ── LOCAL SCHEDULER ──
 function parseDurMins(str){
   if(!str)return 30;
-  if(str.indexOf('hour')>-1){var n=parseInt(str);return(isNaN(n)?1:n)*60;}
+  if(str==='Half day')return 240;
+  if(str==='Full day')return 480;
+  if(str.indexOf('hour')>-1){
+    var n=parseFloat(str);
+    return(isNaN(n)?1:n)*60;
+  }
   var n=parseInt(str);return isNaN(n)?30:n;
 }
 function parseTravelMins(str){
   if(!str||str==='No travel')return 0;
-  if(str.indexOf('hour')>-1)return 60;
+  if(str.indexOf('hour')>-1){
+    var n=parseFloat(str);
+    return(isNaN(n)?1:n)*60;
+  }
   var n=parseInt(str);return isNaN(n)?0:n;
 }
 function toMins(timeStr){
