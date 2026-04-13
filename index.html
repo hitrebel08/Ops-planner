@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Operations Center v3.0</title>
+<title>My Operations Center v3.1</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0f18;font-family:Arial,sans-serif;color:#fff;padding:12px;max-width:640px;margin:0 auto;min-height:100vh;transition:background .3s,color .3s}
@@ -530,23 +530,14 @@ function installPWA(){
 
 <!-- ═══ SCHEDULE ═══ -->
 <div class="panel" id="panel-schedule">
-  <div class="sec">
-    <div class="st">Add Milestone or Hurdle</div>
-    <div class="add-row" style="margin-bottom:6px">
-      <select id="ms-proj-sel" style="flex:1">
-        <option value="">Select Project...</option>
-      </select>
-      <select id="ms-type">
-        <option value="milestone">🎯 Milestone</option>
-        <option value="hurdle">⚠ Hurdle</option>
-      </select>
+  <div class="sec" style="padding:10px 12px;margin-bottom:8px">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="font-size:18px">📅</div>
+      <div>
+        <div class="st" style="margin:0">My Day — Saved Plans</div>
+        <div style="font-size:10px;color:#555;margin-top:2px">Plans saved from <b>Plan My Day</b> appear here</div>
+      </div>
     </div>
-    <div class="add-row" style="margin-bottom:6px">
-      <input type="text" id="ms-title" placeholder="Milestone title or hurdle description..." style="flex:2" />
-      <input type="date" id="ms-date" style="flex:1" />
-    </div>
-    <textarea class="fi fw" id="ms-note" placeholder="Details, context, or how to overcome..." rows="2" style="margin-bottom:6px"></textarea>
-    <button class="btn btn-bl btn-full" onclick="addMilestone()">+ Add</button>
   </div>
   <div id="schedule-list"></div>
 </div>
@@ -1167,33 +1158,67 @@ function addMilestone(){
   save();renderSchedule();renderProjectsList();renderHistory();
 }
 
+// ── SAVE DAY PLAN ──
+function saveDayPlan(){
+  var output=document.getElementById('pmd-schedule-output');
+  if(!output||!output.innerHTML.trim()){closePMD();return;}
+  // Collect schedule items from rendered result (stored in lastPMDResult)
+  if(!window.lastPMDResult||!window.lastPMDResult.schedule){closePMD();return;}
+  if(!state.savedPlans)state.savedPlans=[];
+  // Remove any existing plan for today
+  state.savedPlans=state.savedPlans.filter(function(p){return p.date!==todayStr;});
+  state.savedPlans.unshift({
+    date:todayStr,
+    summary:window.lastPMDResult.summary||'',
+    schedule:window.lastPMDResult.schedule,
+    conflicts:window.lastPMDResult.conflicts||[]
+  });
+  // Keep only last 30 days
+  if(state.savedPlans.length>30)state.savedPlans=state.savedPlans.slice(0,30);
+  save();
+  closePMD();
+  renderSchedule();
+}
+
 function renderSchedule(){
   const el=document.getElementById('schedule-list');if(!el)return;
-  const projs=state.projects||[];
-  if(!projs.length){el.innerHTML='<div class="empty">No projects yet.</div>';return;}
-  el.innerHTML=projs.map(p=>{
-    const ms=(p.milestones||[]).sort((a,b)=>a.date>b.date?1:-1);
-    const hu=(p.hurdles||[]);
-    if(!ms.length&&!hu.length)return'';
-    return `<div class="sec" style="border-color:${p.color}33">
-      <div class="st" style="color:${p.color}">${p.name}</div>
-      ${ms.length?`<div style="font-size:9px;color:#4a9fd4;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Milestones</div>
-        <div class="tl-item">${ms.map((m,i)=>`<div class="tl-item" style="margin-bottom:8px">
-          <div class="tl-line"><div class="tl-dot" style="background:${m.done?p.color:'#1e2a3a'};border:2px solid ${p.color}"></div>${i<ms.length-1?'<div class="tl-con"></div>':''}</div>
-          <div class="tl-body">
-            <div class="tl-month">${fmtDate(m.date)}</div>
-            <div class="tl-title" style="color:${m.done?p.color:'#fff'};${m.done?'text-decoration:line-through':''}">${m.title} ${m.done?'✓':''}</div>
-            ${m.note?`<div class="tl-desc">${m.note}</div>`:''}
-          </div>
-        </div>`).join('')}</div>`:''}
-      ${hu.length?`<div style="font-size:9px;color:#ff8c00;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:${ms.length?'10px':'0'}">Hurdles</div>
-        ${hu.map(h=>`<div class="hurdle-item">
-          <div class="hurdle-icon">${h.resolved?'✅':'⚠'}</div>
-          <div class="hurdle-body"><div class="hurdle-title" style="${h.resolved?'text-decoration:line-through;color:#555':''}">${h.title}</div>${h.note?`<div class="hurdle-note">${h.note}</div>`:''}</div>
-          <span style="font-size:9px;color:${h.resolved?'#27ae60':'#ff8c00'}">${h.resolved?'Resolved':'Open'}</span>
-        </div>`).join('')}`:''}
-    </div>`;
+  const plans=state.savedPlans||[];
+  if(!plans.length){
+    el.innerHTML='<div class="sec"><div class="empty" style="text-align:center;padding:20px">No saved plans yet.<br><span style="font-size:11px;color:#333">Use <b>Plan My Day</b> from the Today tab,<br>then tap <b>Save & Done</b>.</span></div></div>';
+    return;
+  }
+  el.innerHTML=plans.map(function(plan){
+    var dateLabel=plan.date===todayStr?'Today':fmtDate(plan.date);
+    var conflictHtml='';
+    if(plan.conflicts&&plan.conflicts.length){
+      conflictHtml=plan.conflicts.map(function(c){
+        return'<div style="background:#1a0a0a;border-radius:8px;padding:8px;margin-bottom:6px;border-left:3px solid #e05555"><div style="font-size:10px;color:#e05555;font-weight:bold">⚠ Conflict</div><div style="font-size:11px;color:#aaa;margin-top:2px">'+c+'</div></div>';
+      }).join('');
+    }
+    var schedHtml=plan.schedule.map(function(s){
+      var color=s.color||(s.type==='travel'?'#f0a500':s.type==='conflict'?'#e05555':'#2a6496');
+      return'<div class="pmd-schedule-item" style="border-left-color:'+color+'">'
+        +'<div class="pmd-schedule-time">'+s.time+'</div>'
+        +'<div class="pmd-schedule-body"><div class="pmd-schedule-task">'+s.task+'</div>'
+        +((s.duration||s.note)?'<div class="pmd-schedule-meta">'+(s.duration||'')+( s.note?' · '+s.note:'')+'</div>':'')
+        +'</div></div>';
+    }).join('');
+    return'<div class="sec" style="margin-bottom:10px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'
+      +'<div class="st" style="margin:0">📅 '+dateLabel+'</div>'
+      +'<button onclick="deleteDayPlan(\''+plan.date+'\')" style="background:none;border:none;color:#555;font-size:16px;cursor:pointer;padding:0 4px">×</button>'
+      +'</div>'
+      +(plan.summary?'<div style="font-size:11px;color:#4a9fd4;margin-bottom:8px">'+plan.summary+'</div>':'')
+      +conflictHtml
+      +schedHtml
+      +'</div>';
   }).join('');
+}
+
+function deleteDayPlan(date){
+  if(!confirm('Delete saved plan for '+date+'?'))return;
+  state.savedPlans=(state.savedPlans||[]).filter(function(p){return p.date!==date;});
+  save();renderSchedule();
 }
 
 // ── PROGRESS ──
@@ -1720,6 +1745,7 @@ function submitPlanMyDay(){
   // Small delay so user sees the generating screen
   setTimeout(function(){
     var result=localScheduler();
+    window.lastPMDResult=result;
     renderPMDResult(result);
   }, 800);
 }
@@ -2061,8 +2087,8 @@ if(state.theme)setTheme(state.theme);
   </div>
   <div class="pmd-step" id="pmd-step-schedule">
     <div id="pmd-schedule-output"></div>
-    <button class="pmd-next-btn" onclick="closePMD()" style="background:#27ae60">✓ Done</button>
-    <button class="pmd-close-btn" onclick="closePMD()">✕ Close</button>
+    <button class="pmd-next-btn" onclick="saveDayPlan()" style="background:#27ae60">✓ Save & Done</button>
+    <button class="pmd-close-btn" onclick="closePMD()">✕ Close Without Saving</button>
   </div>
 </div>
 
