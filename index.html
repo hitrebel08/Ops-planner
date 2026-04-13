@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Operations Center v3.3</title>
+<title>My Operations Center v3.4</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0f18;font-family:Arial,sans-serif;color:#fff;padding:12px;max-width:640px;margin:0 auto;min-height:100vh;transition:background .3s,color .3s}
@@ -1724,6 +1724,13 @@ function startPlanMyDay(){
       });
       html+='</div>';
     }
+    if(td.isCall){
+      html+='<div class="pmd-q-label" style="margin-top:8px">Can do during travel?</div>';
+      html+='<div class="pmd-options">';
+      html+='<div class="pmd-opt" onclick="pmdSel(this,'+idx+',\'duringTravel\',\'yes\')">✅ Yes, merge with travel</div>';
+      html+='<div class="pmd-opt" onclick="pmdSel(this,'+idx+',\'duringTravel\',\'no\')">🚫 No, needs focus</div>';
+      html+='</div>';
+    }
     html+='</div>';
   });
   if(ql)ql.innerHTML=html;
@@ -1798,7 +1805,7 @@ function localScheduler(){
   var projEnd=toMins(pw?pw.timeTo:'19:00')||1140;
 
   // Separate fixed-time and flexible tasks
-  var fixed=[];var flexible=[];
+  var fixed=[];var flexible=[];var travelCalls=[];
   pmdData.forEach(function(td){
     var t=td.item;
     var fixedMins=toMins(t.time);
@@ -1806,7 +1813,10 @@ function localScheduler(){
     var travel=parseTravelMins(td.travelTime);
     var loc=td.location||'';
     var isTravel=loc&&loc!=='At my factory'&&loc!=='Phone/Online'&&loc!=='phone';
-    if(fixedMins!==null){
+    if(td.isCall&&td.duringTravel==='yes'){
+      // Store as a travel-mergeable call
+      travelCalls.push({task:t.title,startMins:fixedMins,dur:dur,priority:t.priority||'medium'});
+    } else if(fixedMins!==null){
       fixed.push({task:t.title,startMins:fixedMins,dur:dur,travel:isTravel?travel:0,loc:loc,priority:t.priority||'medium',type:'task'});
     } else {
       flexible.push({task:t.title,dur:dur,travel:isTravel?travel:0,loc:loc,priority:t.priority||'medium',type:'task'});
@@ -1844,9 +1854,22 @@ function localScheduler(){
       }
     }
 
-    // Add travel
+    // Add travel — check if any travelCalls fit inside this travel window
     if(travelNeeded>0&&travelStart>=cursor){
-      schedule.push({time:fromMins(travelStart),task:'🚗 Travel to '+task.task,duration:travelNeeded+' min',type:'travel',color:'#f0a500',note:'Allow '+travelNeeded+' min'});
+      // Find calls that fit within this travel block
+      var mergedCalls=travelCalls.filter(function(c){
+        return c.startMins>=travelStart&&c.startMins<task.startMins&&c.dur<=travelNeeded;
+      });
+      if(mergedCalls.length>0){
+        var callNames=mergedCalls.map(function(c){return'📞 '+c.task;}).join(', ');
+        schedule.push({time:fromMins(travelStart),task:'🚗 Travel to '+task.task+' + '+callNames,duration:travelNeeded+' min',type:'travel',color:'#f0a500',note:'Call during travel'});
+        // Remove merged calls from travelCalls pool
+        mergedCalls.forEach(function(c){
+          var idx=travelCalls.indexOf(c);if(idx>-1)travelCalls.splice(idx,1);
+        });
+      } else {
+        schedule.push({time:fromMins(travelStart),task:'🚗 Travel to '+task.task,duration:travelNeeded+' min',type:'travel',color:'#f0a500',note:'Allow '+travelNeeded+' min'});
+      }
     }
 
     // Add task
@@ -1854,10 +1877,33 @@ function localScheduler(){
     schedule.push({time:fromMins(task.startMins),task:task.task,duration:task.dur+' min',type:'task',color:color,note:task.loc||''});
     cursor=task.startMins+task.dur;
 
-    // Return travel
+    // Return travel — check if any travelCalls fit inside return window
     if(travelNeeded>0){
-      schedule.push({time:fromMins(cursor),task:'🚗 Return from '+task.task,duration:travelNeeded+' min',type:'travel',color:'#f0a500',note:'Allow '+travelNeeded+' min return'});
+      var returnEnd=cursor+travelNeeded;
+      var returnCalls=travelCalls.filter(function(c){
+        return c.startMins>=cursor&&c.startMins<returnEnd&&c.dur<=travelNeeded;
+      });
+      if(returnCalls.length>0){
+        var rCallNames=returnCalls.map(function(c){return'📞 '+c.task;}).join(', ');
+        schedule.push({time:fromMins(cursor),task:'🚗 Return from '+task.task+' + '+rCallNames,duration:travelNeeded+' min',type:'travel',color:'#f0a500',note:'Call during return'});
+        returnCalls.forEach(function(c){
+          var idx=travelCalls.indexOf(c);if(idx>-1)travelCalls.splice(idx,1);
+        });
+      } else {
+        schedule.push({time:fromMins(cursor),task:'🚗 Return from '+task.task,duration:travelNeeded+' min',type:'travel',color:'#f0a500',note:'Allow '+travelNeeded+' min return'});
+      }
       cursor+=travelNeeded;
+    }
+  });
+
+  // Any remaining travel calls that didn't merge — add as standalone
+  travelCalls.forEach(function(c){
+    var color=c.priority==='high'?'#c97b6a':c.priority==='low'?'#5a8ab0':'#7daa5a';
+    if(c.startMins!==null){
+      schedule.push({time:fromMins(c.startMins),task:c.task,duration:c.dur+' min',type:'task',color:color,note:'phone'});
+    } else {
+      schedule.push({time:fromMins(cursor),task:c.task,duration:c.dur+' min',type:'task',color:color,note:'phone'});
+      cursor+=c.dur;
     }
   });
 
